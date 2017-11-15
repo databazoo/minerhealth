@@ -17,4 +17,4 @@ SET remoteReboot=1
 REM ############################################################################
 
 REM Running
-java -jar minerhealth.jar $machine $logDir $fanControl $remoteReboot
+java -jar minerhealth.jar %machine% %logDir% %fanControl% %remoteReboot%
