@@ -10,7 +10,7 @@ import static com.databazoo.minerhealth.MinerHealth.LOGGER;
 /**
  * Global application config.
  *
- * @author bobus
+ * @author boris
  */
 public class Config {
 
