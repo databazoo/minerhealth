@@ -17,17 +17,19 @@ public class MinerHealth {
     /**
      * main() method
      *
-     * @param args command-line params
+     * @param args command line arguments
      */
     public static void main(String[] args) {
-        new MinerHealth().start();
+        new MinerHealth().start(args);
     }
 
     /**
      * Run application
+     *
+     * @param args command line arguments
      */
-    private void start() {
-        Config.init();
+    private void start(String[] args) {
+        Config.init(args);
 
         LOGGER.info("Config initialized");
     }
