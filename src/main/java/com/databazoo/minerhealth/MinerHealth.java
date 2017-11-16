@@ -29,7 +29,7 @@ public class MinerHealth {
      * @param args command line arguments
      */
     private void start(String[] args) {
-        Config.INSTANCE.init(args);
+        Config.init(args);
 
         LOGGER.info("Config initialized");
     }

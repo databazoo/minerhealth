@@ -14,9 +14,9 @@ import static com.databazoo.minerhealth.MinerHealth.LOGGER;
  */
 public class Config {
 
-    public static final Config INSTANCE = new Config();
+    private static final Config INSTANCE = new Config();
 
-    public final static String APP_VERSION = UIConstants.getAppVersion();
+    public static final String APP_VERSION = UIConstants.getAppVersion();
     public static final String APP_NAME_BASE = UIConstants.getProperty("app.name");
     public static final String APP_DEFAULT_URL = UIConstants.getProperty("app.url");
     public static final String APP_COPYRIGHT = UIConstants.getProperty("app.copyright");
@@ -28,60 +28,67 @@ public class Config {
     private boolean fanControl;
     private boolean remoteReboot;
 
-    public String getMachineName() {
-        return machineName;
+    public static String getMachineName() {
+        return INSTANCE.machineName;
     }
 
-    public void setMachineName(String machineName) {
+    public static File getLogDir() {
+        return INSTANCE.logDir;
+    }
+
+    public static boolean isFanControl() {
+        return INSTANCE.fanControl;
+    }
+
+    public static boolean isRemoteReboot() {
+        return INSTANCE.remoteReboot;
+    }
+
+    public static String getConfigFileName() {
+        return "minerhealth." + (UIConstants.isWindows() ? "bat" : "sh");
+    }
+
+    void setMachineName(String machineName) {
         this.machineName = machineName;
     }
 
-    public File getLogDir() {
-        return logDir;
-    }
-
-    public void setLogDir(File logDir) {
+    void setLogDir(File logDir) {
         this.logDir = logDir;
     }
 
-    public boolean isFanControl() {
-        return fanControl;
-    }
-
-    public void setFanControl(boolean fanControl) {
+    void setFanControl(boolean fanControl) {
         this.fanControl = fanControl;
     }
 
-    public boolean isRemoteReboot() {
-        return remoteReboot;
-    }
-
-    public void setRemoteReboot(boolean remoteReboot) {
+    void setRemoteReboot(boolean remoteReboot) {
         this.remoteReboot = remoteReboot;
     }
 
     /**
-     * Check password, licence, app name and new version.
+     * Read command line args and do basic validation.
+     *
+     * This runs exclusively from {@link com.databazoo.minerhealth.MinerHealth#main(String[])}, so access synchronization is skipped.
      *
      * @param args command line arguments
      */
-    public void init(String[] args) {
+    public static void init(String[] args) {
         UIConstants.PROPERTIES = null;
 
         if (args.length != EXPECTED_ARGS) {
             throw new IllegalArgumentException("Expected " + EXPECTED_ARGS + " arguments, but received " + args.length);
         }
 
-        machineName = args[0];
-        logDir = new File(args[1]);
-        fanControl = getBoolean(args[2]);
-        remoteReboot = getBoolean(args[3]);
+        INSTANCE.machineName = args[0];
+        INSTANCE.logDir = new File(args[1]);
+        INSTANCE.fanControl = getBoolean(args[2]);
+        INSTANCE.remoteReboot = getBoolean(args[3]);
 
-        if (!logDir.exists()) {
-            throw new IllegalArgumentException("Folder " + logDir.getAbsolutePath() + " does not exist");
+        if (!INSTANCE.logDir.exists()) {
+            throw new IllegalArgumentException("Folder " + INSTANCE.logDir.getAbsolutePath() + " does not exist. " +
+                    "Please set 'logDir' variable properly in " + getConfigFileName());
         }
 
-        LOGGER.info(toString());
+        LOGGER.info(INSTANCE.toString());
     }
 
     private static boolean getBoolean(String arg) {

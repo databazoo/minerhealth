@@ -6,6 +6,6 @@ public class MinerHealthTest {
 
     @Test
     public void main() {
-        MinerHealth.main(new String[] { "TESTRIG", "./", "1", "1" });
+        MinerHealth.main(new String[] { "TEST_RIG", "./", "1", "1" });
     }
 }
