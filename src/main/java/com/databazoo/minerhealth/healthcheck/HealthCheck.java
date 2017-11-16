@@ -19,6 +19,11 @@ public interface HealthCheck {
     }
 
     static HealthCheck getDriver() {
-        return null;
+        HealthCheck driver = HealthCheckBase.getCachedDriver();
+        if (driver != null) {
+            return driver;
+        } else {
+            return HealthCheckBase.findSuitableDriver();
+        }
     }
 }
