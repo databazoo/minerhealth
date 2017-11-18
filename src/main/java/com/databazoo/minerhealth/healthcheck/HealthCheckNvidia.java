@@ -5,10 +5,24 @@ package com.databazoo.minerhealth.healthcheck;
  *
  * @author boris
  */
-public class HealthCheckNvidia extends HealthCheckBase {
+class HealthCheckNvidia extends HealthCheckBase {
 
+	/**
+	 * Individual driver implementation requirement.
+	 */
 	@Override
 	public void check() {
 		// TODO
+	}
+
+	/**
+	 * Get command line arguments for detection of available GPUs.
+	 *
+	 * @return command line arguments
+	 */
+	@Override
+	String[] countGPUsQuery() {
+		// TODO
+		return new String[] {};
 	}
 }

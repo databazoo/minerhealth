@@ -1,9 +1,9 @@
 package com.databazoo.minerhealth.healthcheck;
 
+import com.databazoo.minerhealth.config.Config;
+
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.databazoo.minerhealth.config.Config;
 
 /**
  * Health Check interface. The entry point to the whole health check implementation is {@link #runChecks()}.
@@ -11,6 +11,13 @@ import com.databazoo.minerhealth.config.Config;
  * @author boris
  */
 public interface HealthCheck {
+
+    /**
+     * Check if driver can be used.
+     *
+     * @return can driver be used?
+     */
+    boolean isSuitable();
 
     /**
      * Individual driver implementation requirement.
@@ -39,6 +46,10 @@ public interface HealthCheck {
         if (driver != null) {
             return driver;
         } else {
+            HealthCheckBase.addDrivers(
+                    new HealthCheckAMD(),
+                    new HealthCheckNvidia()
+            );
             return HealthCheckBase.findSuitableDriver();
         }
     }
