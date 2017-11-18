@@ -13,6 +13,11 @@ public class HealthCheckNvidiaTest {
 		assertFalse(new HealthCheckNvidiaImpl(0).isSuitable());
 	}
 
+	@Test
+	public void countGPUsQuery() throws Exception {
+		new HealthCheckNvidia().isSuitable();
+	}
+
 	private class HealthCheckNvidiaImpl extends HealthCheckNvidia {
 
 		private final int gpuCount;

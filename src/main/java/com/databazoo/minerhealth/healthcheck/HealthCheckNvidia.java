@@ -1,5 +1,7 @@
 package com.databazoo.minerhealth.healthcheck;
 
+import com.databazoo.components.UIConstants;
+
 /**
  * nVidia implementation of health check driver.
  *
@@ -22,7 +24,10 @@ class HealthCheckNvidia extends HealthCheckBase {
 	 */
 	@Override
 	String[] countGPUsQuery() {
-		// TODO
-		return new String[] {};
+		if (UIConstants.isWindows()) {
+			throw new IllegalStateException("Windows not supported yet.");
+		} else {
+			return new String[]{"nvidia-smi", "|", "grep", "GeForce", "|", "wc", "-l"};
+		}
 	}
 }
