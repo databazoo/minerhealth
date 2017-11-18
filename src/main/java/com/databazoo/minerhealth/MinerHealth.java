@@ -4,11 +4,12 @@ package com.databazoo.minerhealth;
 import java.util.logging.Logger;
 
 import com.databazoo.minerhealth.config.Config;
+import com.databazoo.minerhealth.healthcheck.HealthCheck;
 
 /**
  * Main class
  *
- * @author bobus
+ * @author boris
  */
 public class MinerHealth {
 
@@ -30,7 +31,6 @@ public class MinerHealth {
      */
     private void start(String[] args) {
         Config.init(args);
-
-        LOGGER.info("Config initialized");
+        HealthCheck.runChecks();
     }
 }

@@ -10,7 +10,7 @@ import static com.databazoo.minerhealth.MinerHealth.LOGGER;
 /**
  * Global application config.
  *
- * @author bobus
+ * @author boris
  */
 public class Config {
 
@@ -21,12 +21,14 @@ public class Config {
     public static final String APP_DEFAULT_URL = UIConstants.getProperty("app.url");
     public static final String APP_COPYRIGHT = UIConstants.getProperty("app.copyright");
 
-    private static final int EXPECTED_ARGS = 4;
+    private static final int EXPECTED_ARGS = 5;
+    private static final int MIN_INTERVAL = 5;
 
     private String machineName;
     private File logDir;
     private boolean fanControl;
     private boolean remoteReboot;
+    private int reportInterval;
 
     public static String getMachineName() {
         return INSTANCE.machineName;
@@ -42,6 +44,10 @@ public class Config {
 
     public static boolean isRemoteReboot() {
         return INSTANCE.remoteReboot;
+    }
+
+    public static int getReportInterval() {
+        return INSTANCE.reportInterval;
     }
 
     public static String getConfigFileName() {
@@ -64,6 +70,10 @@ public class Config {
         this.remoteReboot = remoteReboot;
     }
 
+    void setReportInterval(int reportInterval) {
+        this.reportInterval = reportInterval;
+    }
+
     /**
      * Read command line args and do basic validation.
      *
@@ -82,10 +92,16 @@ public class Config {
         INSTANCE.logDir = new File(args[1]);
         INSTANCE.fanControl = getBoolean(args[2]);
         INSTANCE.remoteReboot = getBoolean(args[3]);
+        INSTANCE.reportInterval = Integer.parseInt(args[4]);
 
         if (!INSTANCE.logDir.exists()) {
             throw new IllegalArgumentException("Folder " + INSTANCE.logDir.getAbsolutePath() + " does not exist. " +
                     "Please set 'logDir' variable properly in " + getConfigFileName());
+        }
+
+        if (INSTANCE.reportInterval < MIN_INTERVAL) {
+            throw new IllegalArgumentException("Report interval can not be less than " + MIN_INTERVAL + ". " +
+                    "Please set 'reportInterval' variable properly in " + getConfigFileName());
         }
 
         LOGGER.info(INSTANCE.toString());
@@ -101,6 +117,7 @@ public class Config {
                 ", logDir=" + logDir.getAbsolutePath() +
                 ", fanControl=" + fanControl +
                 ", remoteReboot=" + remoteReboot +
+                ", reportInterval=" + reportInterval +
                 " }";
     }
 }

@@ -15,7 +15,10 @@ fanControl=1
 # Enable or disable remote restart (from web GUI)
 remoteReboot=1
 
+# Report interval (seconds)
+reportInterval=20
+
 ################################################################################
 
 # Running
-java -jar "minerhealth.jar" $machine $logDir $fanControl $remoteReboot
+java -jar "minerhealth.jar" $machine $logDir $fanControl $remoteReboot $reportInterval

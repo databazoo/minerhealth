@@ -16,7 +16,10 @@ SET fanControl=1
 REM Enable or disable remote restart (from web GUI)
 SET remoteReboot=1
 
+REM Report interval (seconds)
+SET reportInterval=20
+
 REM ############################################################################
 
 REM Running
-java -jar minerhealth.jar %machine% %logDir% %fanControl% %remoteReboot%
+java -jar minerhealth.jar %machine% %logDir% %fanControl% %remoteReboot% %reportInterval%
