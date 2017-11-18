@@ -28,12 +28,12 @@ public interface HealthCheck {
      * The entry point to the whole health check implementation
      */
     static void runChecks() {
-        new Timer().schedule(new TimerTask() {
+        new Timer("Check Timer").schedule(new TimerTask() {
 
             @Override public void run() {
                 getDriver().check();
             }
-        }, Config.getReportInterval() * 1000);
+        }, 0, Config.getReportInterval() * 1000);
     }
 
     /**

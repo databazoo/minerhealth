@@ -112,12 +112,12 @@ public class Config {
     }
 
     @Override public String toString() {
-        return "Config { " +
-                "machineName='" + machineName + '\'' +
-                ", logDir=" + logDir.getAbsolutePath() +
-                ", fanControl=" + fanControl +
-                ", remoteReboot=" + remoteReboot +
-                ", reportInterval=" + reportInterval +
-                " }";
+        return "Config {" +
+                "\n\tmachineName = " + machineName +
+                "\n\tlogDir = " + logDir.getAbsolutePath() +
+                "\n\tfanControl = " + fanControl +
+                "\n\tremoteReboot = " + remoteReboot +
+                "\n\treportInterval = " + reportInterval +
+                "\n}";
     }
 }
