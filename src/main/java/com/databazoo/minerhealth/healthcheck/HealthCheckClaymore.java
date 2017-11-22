@@ -1,6 +1,9 @@
 package com.databazoo.minerhealth.healthcheck;
 
-public class HealthCheckClaymore implements HealthCheck {
+import com.databazoo.components.UIConstants;
+import com.databazoo.minerhealth.executable.Executable;
+
+public class HealthCheckClaymore {
 
     private int gpuCount;
     private double performance;
@@ -9,7 +12,7 @@ public class HealthCheckClaymore implements HealthCheck {
         return gpuCount;
     }
 
-    public void setGpuCount(int gpuCount) {
+    void setGpuCount(int gpuCount) {
         this.gpuCount = gpuCount;
     }
 
@@ -21,30 +24,25 @@ public class HealthCheckClaymore implements HealthCheck {
         return performance / gpuCount * 1.0;
     }
 
-    @Override public boolean isSuitable() {
-        return true;
-    }
-
-    @Override public void check() {
-        // TODO
-        performance = 0;
-    }
-
-    /**
-     * Update fan speed (if allowed). Individual driver implementation requirement.
-     */
-    @Override
-    public void updateFans() {
-
+    void check() {
+        Executable exec = new Executable(countTotalOutputQuery()).exec();
+        if (exec.getResultCode() == 0) {
+            performance = Double.parseDouble(exec.getOutputStd());
+        } else {
+            throw new IllegalStateException("Reading Claymore log failed.");
+        }
     }
 
     /**
-     * Get detected temperature.
+     * Get command line arguments for detection of total output.
      *
-     * @return temperature as provided by the driver
+     * @return command line arguments
      */
-    @Override
-    public int getTemperature() {
-        return 0;
+    private String[] countTotalOutputQuery() {
+        if (UIConstants.isWindows()) {
+            throw new IllegalStateException("Windows not supported yet.");
+        } else {
+            return new String[] { "/bin/sh", "-c", "ls -rt . | tail -1 | xargs grep Total | tail -1 | perl -pe 's/^.*?Total.*?(\\d+(\\.\\d+)?).*$/\\1/;'"};
+        }
     }
 }
