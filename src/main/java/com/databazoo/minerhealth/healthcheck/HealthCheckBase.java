@@ -1,9 +1,9 @@
 package com.databazoo.minerhealth.healthcheck;
 
-import com.databazoo.minerhealth.executable.Executable;
-
 import java.util.Arrays;
 import java.util.List;
+
+import com.databazoo.minerhealth.executable.Executable;
 
 /**
  * Sub-frame of all health check drivers. Provides a cache for suitable driver instance, etc.
@@ -18,6 +18,8 @@ abstract class HealthCheckBase implements HealthCheck {
     private static HealthCheck cachedDriver;
 
     private static List<HealthCheck> availableDrivers;
+
+    double temperature;
 
     /**
      * Get HealthCheck driver instance
@@ -46,16 +48,22 @@ abstract class HealthCheckBase implements HealthCheck {
     }
 
     /**
-     * Check if driver can be used.
+     * Check if driver can be used by getting GPU count.
+     * This value is also stored to the Claymore health check instance.
      *
      * @return can driver be used?
      */
     @Override
     public boolean isSuitable() {
         Executable exec = new Executable(countGPUsQuery()).exec();
-        return exec.getResultCode() == 0 &&
+        int gpuCount = 0;
+        boolean result = exec.getResultCode() == 0 &&
                 exec.getOutputStd().matches("[0-9\\-]+") &&
-                Integer.parseInt(exec.getOutputStd()) > 0;
+                (gpuCount = Integer.parseInt(exec.getOutputStd())) > 0;
+        if (gpuCount > 0) {
+            HealthCheck.getClaymore().setGpuCount(gpuCount);
+        }
+        return result;
     }
 
     /**
@@ -64,4 +72,13 @@ abstract class HealthCheckBase implements HealthCheck {
      * @return command line arguments
      */
     abstract String[] countGPUsQuery();
+
+    /**
+     * Get detected temperature.
+     *
+     * @return temperature as provided by the driver
+     */
+    public double getTemperature() {
+        return temperature;
+    }
 }

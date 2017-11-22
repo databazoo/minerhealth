@@ -30,6 +30,11 @@ public class Config {
     private boolean remoteReboot;
     private int reportInterval;
 
+    private double minTemp = 0;
+    private double maxTemp = 999;
+    private double minPerformance = 0;
+    private double minPerformancePerGPU = 0;
+
     public static String getMachineName() {
         return INSTANCE.machineName;
     }
@@ -72,6 +77,38 @@ public class Config {
 
     void setReportInterval(int reportInterval) {
         this.reportInterval = reportInterval;
+    }
+
+    public static double getMinTemp() {
+        return INSTANCE.minTemp;
+    }
+
+    public static void setMinTemp(double minTemp) {
+        INSTANCE.minTemp = minTemp;
+    }
+
+    public static double getMaxTemp() {
+        return INSTANCE.maxTemp;
+    }
+
+    public static void setMaxTemp(double maxTemp) {
+        INSTANCE.maxTemp = maxTemp;
+    }
+
+    public static double getMinPerformance() {
+        return INSTANCE.minPerformance;
+    }
+
+    public static void setMinPerformance(double minPerformance) {
+        INSTANCE.minPerformance = minPerformance;
+    }
+
+    public static double getMinPerformancePerGPU() {
+        return INSTANCE.minPerformancePerGPU;
+    }
+
+    public static void setMinPerformancePerGPU(double minPerformancePerGPU) {
+        INSTANCE.minPerformancePerGPU = minPerformancePerGPU;
     }
 
     /**

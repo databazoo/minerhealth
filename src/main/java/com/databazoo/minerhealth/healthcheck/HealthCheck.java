@@ -1,9 +1,10 @@
 package com.databazoo.minerhealth.healthcheck;
 
-import com.databazoo.minerhealth.config.Config;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
+import com.databazoo.minerhealth.config.Config;
+import com.databazoo.minerhealth.reporter.Reporter;
 
 /**
  * Health Check interface. The entry point to the whole health check implementation is {@link #runChecks()}.
@@ -11,6 +12,9 @@ import java.util.TimerTask;
  * @author boris
  */
 public interface HealthCheck {
+
+    HealthCheckClaymore CLAYMORE = new HealthCheckClaymore();
+    Reporter REPORTER = new Reporter();
 
     /**
      * Check if driver can be used.
@@ -25,15 +29,36 @@ public interface HealthCheck {
     void check();
 
     /**
+     * Get detected temperature.
+     *
+     * @return temperature as provided by the driver
+     */
+    double getTemperature();
+
+    /**
      * The entry point to the whole health check implementation
      */
     static void runChecks() {
         new Timer("Check Timer").schedule(new TimerTask() {
 
             @Override public void run() {
-                getDriver().check();
+                final HealthCheck driver = getDriver();
+                final HealthCheckClaymore claymore = getClaymore();
+
+                driver.check();
+                claymore.check();
+
+                getReporter().reportToServer(driver, claymore);
             }
         }, 0, Config.getReportInterval() * 1000);
+    }
+
+    static Reporter getReporter() {
+        return REPORTER;
+    }
+
+    static HealthCheckClaymore getClaymore() {
+        return CLAYMORE;
     }
 
     /**
