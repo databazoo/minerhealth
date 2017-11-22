@@ -30,6 +30,11 @@ public class Config {
     private boolean remoteReboot;
     private int reportInterval;
 
+    private double minTemp = 0;
+    private double maxTemp = 999;
+    private double minPerformance = 0;
+    private double minPerformancePerGPU = 0;
+
     public static String getMachineName() {
         return INSTANCE.machineName;
     }
@@ -54,24 +59,56 @@ public class Config {
         return "minerhealth." + (UIConstants.isWindows() ? "bat" : "sh");
     }
 
-    void setMachineName(String machineName) {
-        this.machineName = machineName;
+    public static void setMachineName(String machineName) {
+        INSTANCE.machineName = machineName;
     }
 
-    void setLogDir(File logDir) {
-        this.logDir = logDir;
+    public static void setLogDir(File logDir) {
+        INSTANCE.logDir = logDir;
     }
 
-    void setFanControl(boolean fanControl) {
-        this.fanControl = fanControl;
+    public static void setFanControl(boolean fanControl) {
+        INSTANCE.fanControl = fanControl;
     }
 
-    void setRemoteReboot(boolean remoteReboot) {
-        this.remoteReboot = remoteReboot;
+    public static void setRemoteReboot(boolean remoteReboot) {
+        INSTANCE.remoteReboot = remoteReboot;
     }
 
-    void setReportInterval(int reportInterval) {
-        this.reportInterval = reportInterval;
+    public static void setReportInterval(int reportInterval) {
+        INSTANCE.reportInterval = reportInterval;
+    }
+
+    public static double getMinTemp() {
+        return INSTANCE.minTemp;
+    }
+
+    public static void setMinTemp(double minTemp) {
+        INSTANCE.minTemp = minTemp;
+    }
+
+    public static double getMaxTemp() {
+        return INSTANCE.maxTemp;
+    }
+
+    public static void setMaxTemp(double maxTemp) {
+        INSTANCE.maxTemp = maxTemp;
+    }
+
+    public static double getMinPerformance() {
+        return INSTANCE.minPerformance;
+    }
+
+    public static void setMinPerformance(double minPerformance) {
+        INSTANCE.minPerformance = minPerformance;
+    }
+
+    public static double getMinPerformancePerGPU() {
+        return INSTANCE.minPerformancePerGPU;
+    }
+
+    public static void setMinPerformancePerGPU(double minPerformancePerGPU) {
+        INSTANCE.minPerformancePerGPU = minPerformancePerGPU;
     }
 
     /**
