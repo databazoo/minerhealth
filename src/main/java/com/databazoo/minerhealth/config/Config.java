@@ -59,24 +59,24 @@ public class Config {
         return "minerhealth." + (UIConstants.isWindows() ? "bat" : "sh");
     }
 
-    void setMachineName(String machineName) {
-        this.machineName = machineName;
+    public static void setMachineName(String machineName) {
+        INSTANCE.machineName = machineName;
     }
 
-    void setLogDir(File logDir) {
-        this.logDir = logDir;
+    public static void setLogDir(File logDir) {
+        INSTANCE.logDir = logDir;
     }
 
-    void setFanControl(boolean fanControl) {
-        this.fanControl = fanControl;
+    public static void setFanControl(boolean fanControl) {
+        INSTANCE.fanControl = fanControl;
     }
 
-    void setRemoteReboot(boolean remoteReboot) {
-        this.remoteReboot = remoteReboot;
+    public static void setRemoteReboot(boolean remoteReboot) {
+        INSTANCE.remoteReboot = remoteReboot;
     }
 
-    void setReportInterval(int reportInterval) {
-        this.reportInterval = reportInterval;
+    public static void setReportInterval(int reportInterval) {
+        INSTANCE.reportInterval = reportInterval;
     }
 
     public static double getMinTemp() {

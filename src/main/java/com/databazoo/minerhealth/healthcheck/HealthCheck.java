@@ -24,16 +24,21 @@ public interface HealthCheck {
     boolean isSuitable();
 
     /**
-     * Individual driver implementation requirement.
+     * Check system temperature. Individual driver implementation requirement.
      */
     void check();
+
+    /**
+     * Update fan speed (if allowed). Individual driver implementation requirement.
+     */
+    void updateFans();
 
     /**
      * Get detected temperature.
      *
      * @return temperature as provided by the driver
      */
-    double getTemperature();
+    int getTemperature();
 
     /**
      * The entry point to the whole health check implementation
@@ -45,6 +50,9 @@ public interface HealthCheck {
                 final HealthCheck driver = getDriver();
                 final HealthCheckClaymore claymore = getClaymore();
 
+                if (Config.isFanControl()) {
+                    driver.updateFans();
+                }
                 driver.check();
                 claymore.check();
 

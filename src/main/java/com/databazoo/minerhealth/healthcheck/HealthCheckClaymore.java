@@ -30,7 +30,21 @@ public class HealthCheckClaymore implements HealthCheck {
         performance = 0;
     }
 
-    @Override public double getTemperature() {
+    /**
+     * Update fan speed (if allowed). Individual driver implementation requirement.
+     */
+    @Override
+    public void updateFans() {
+
+    }
+
+    /**
+     * Get detected temperature.
+     *
+     * @return temperature as provided by the driver
+     */
+    @Override
+    public int getTemperature() {
         return 0;
     }
 }

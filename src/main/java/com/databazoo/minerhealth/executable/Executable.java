@@ -56,7 +56,7 @@ public class Executable {
 				BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				try {
 					while ((s = input.readLine()) != null) {
-						MinerHealth.LOGGER.info(s);
+						//MinerHealth.LOGGER.info(s);
 						outputSB.append(s);
 					}
 				} catch (IOException ex) {
@@ -71,7 +71,7 @@ public class Executable {
 				BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 				try {
 					while ((s = input.readLine()) != null) {
-						MinerHealth.LOGGER.info(s);
+						MinerHealth.LOGGER.warning(s);
 						outputSB.append(s);
 					}
 				} catch (IOException ex) {
@@ -83,7 +83,7 @@ public class Executable {
 
 			// Wait for process to end
 			resultCode = p.waitFor();
-			MinerHealth.LOGGER.info("exit code: "+ resultCode);
+			//MinerHealth.LOGGER.info("exit code: "+ resultCode);
 
 			// Wait for threads to collect all data
 			latch.await();

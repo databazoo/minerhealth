@@ -1,0 +1,107 @@
+21:12:49:437	189f4b80	args: -epool eth-eu1.nanopool.org:9999 -ewal 0x51ac77d19142a26d48a5b1a0fe9e9b3c63d645e1.Rig3L/doprkna@seznam.cz -epsw x -mode 1 -ftime 10 
+21:12:49:437	189f4b80	
+21:12:49:437	189f4b80	ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+21:12:49:437	189f4b80	บ      Claymore's Dual ETH + DCR/SC/LBC/PASC GPU Miner v9.8      บ
+21:12:49:437	189f4b80	ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+21:12:49:437	189f4b80	
+21:12:49:638	189f4b80	ETH: 5 pools are specified
+21:12:49:638	189f4b80	Main Ethereum pool is eth-eu1.nanopool.org:9999
+21:12:49:905	189f4b80	OpenCL platform: NVIDIA CUDA
+21:12:49:905	189f4b80	AMD OpenCL platform not found 
+21:12:49:968	189f4b80	CUDA initializing...
+
+21:12:49:968	189f4b80	NVIDIA Cards available: 5 
+21:12:49:968	189f4b80	CUDA Driver Version/Runtime Version: 8.0/8.0
+21:12:49:968	189f4b80	GPU #0: GeForce GTX 1060 3GB, 3007 MB available, 9 compute units, capability: 6.1
+
+21:12:49:970	189f4b80	GPU #1: GeForce GTX 1060 3GB, 3013 MB available, 9 compute units, capability: 6.1
+
+21:12:49:971	189f4b80	GPU #2: GeForce GTX 1060 3GB, 3013 MB available, 9 compute units, capability: 6.1
+
+21:12:49:972	189f4b80	GPU #3: GeForce GTX 1060 3GB, 3013 MB available, 9 compute units, capability: 6.1
+
+21:12:49:973	189f4b80	GPU #4: GeForce GTX 1060 3GB, 3013 MB available, 9 compute units, capability: 6.1
+
+21:12:49:973	189f4b80	Total cards: 5 
+21:12:53:974	189f4b80	No AMD cards in the list, ADL library will not be used.
+21:12:53:978	189f4b80	NVML version: 8.375.66
+21:12:54:790	ceffd700	ETH: Stratum - connecting to 'eth-eu1.nanopool.org' <164.132.109.110> port 9999
+21:12:54:808	ceffd700	send: {"worker": "eth1.0", "jsonrpc": "2.0", "params": ["0x51ac77d19142a26d48a5b1a0fe9e9b3c63d645e1.Rig3L/doprkna@seznam.cz", "x"], "id": 2, "method": "eth_submitLogin"}
+
+21:12:54:809	ceffd700	ETH: Stratum - Connected (eth-eu1.nanopool.org:9999)
+21:12:54:850	ceffd700	got 282 bytes
+21:12:54:850	ceffd700	buf: {"jsonrpc":"2.0","id":2,"result":true}
+{"jsonrpc":"2.0","id":0,"result":["0xb2ee59f90b30d5f6d3c97a3701c2a1396ade4dc84f09cff0d09ca675b284051b","0x0986c6a216293f204351dd4d0b5570e9d5979d65e8389cfbc8ffe0b517d9706c","0x00000000dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912adcb8d8422e"]}
+
+21:12:54:850	ceffd700	parse packet: 38
+21:12:54:850	ceffd700	ETH: Authorized
+21:12:54:850	ceffd700	send: {"worker": "", "jsonrpc": "2.0", "params": [], "id": 3, "method": "eth_getWork"}
+
+21:12:54:850	ceffd700	remove first packet 243
+21:12:54:850	ceffd700	new buf size: 243
+21:12:54:850	ceffd700	parse packet: 242
+21:12:54:850	ceffd700	ETH: job changed
+21:12:54:850	ceffd700	new buf size: 0
+21:12:54:856	189f4b80	ETHEREUM-ONLY MINING MODE ENABLED (-mode 1)
+21:12:54:856	189f4b80	ETH: eth-proxy stratum mode
+21:12:54:856	189f4b80	Watchdog enabled
+21:12:54:856	189f4b80	Remote management (READ-ONLY MODE) is enabled on port 3333
+21:12:54:856	189f4b80	
+21:12:54:857	f0ff9700	Setting DAG epoch #140...
+21:12:54:878	ceffd700	got 243 bytes
+21:12:54:878	ceffd700	buf: {"jsonrpc":"2.0","id":0,"result":["0xb2ee59f90b30d5f6d3c97a3701c2a1396ade4dc84f09cff0d09ca675b284051b","0x0986c6a216293f204351dd4d0b5570e9d5979d65e8389cfbc8ffe0b517d9706c","0x00000000dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912adcb8d8422e"]}
+
+21:12:54:878	ceffd700	parse packet: 242
+21:12:54:878	ceffd700	ETH: job is the same
+21:12:54:878	ceffd700	new buf size: 0
+21:12:57:127	d67fc700	Setting DAG epoch #140 for GPU2
+21:12:57:127	d67fc700	Create GPU buffer for GPU2
+21:12:57:129	d57fa700	Setting DAG epoch #140 for GPU3
+21:12:57:129	d57fa700	Create GPU buffer for GPU3
+21:12:57:129	d6ffd700	Setting DAG epoch #140 for GPU1
+21:12:57:129	d6ffd700	Create GPU buffer for GPU1
+21:12:57:127	f0ff9700	Setting DAG epoch #140 for GPU0
+21:12:57:130	f0ff9700	Create GPU buffer for GPU0
+21:12:57:127	cffff700	Setting DAG epoch #140 for GPU4
+21:12:57:131	cffff700	Create GPU buffer for GPU4
+21:13:04:851	ceffd700	ETH: checking pool connection...
+21:13:04:852	ceffd700	send: {"worker": "", "jsonrpc": "2.0", "params": [], "id": 3, "method": "eth_getWork"}
+
+21:13:04:880	ceffd700	got 243 bytes
+21:13:04:880	ceffd700	buf: {"jsonrpc":"2.0","id":0,"result":["0xb2ee59f90b30d5f6d3c97a3701c2a1396ade4dc84f09cff0d09ca675b284051b","0x0986c6a216293f204351dd4d0b5570e9d5979d65e8389cfbc8ffe0b517d9706c","0x00000000dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912adcb8d8422e"]}
+
+21:13:04:880	ceffd700	parse packet: 242
+21:13:04:880	ceffd700	ETH: job is the same
+21:13:04:880	ceffd700	new buf size: 0
+21:13:06:352	f0ff9700	GPU0 DAG creation time - 9168 ms
+21:13:06:352	f0ff9700	Setting DAG epoch #140 for GPU0 done
+21:13:06:780	d6ffd700	GPU1 DAG creation time - 9553 ms
+21:13:06:780	d6ffd700	Setting DAG epoch #140 for GPU1 done
+21:13:06:805	d67fc700	GPU2 DAG creation time - 9580 ms
+21:13:06:805	d67fc700	Setting DAG epoch #140 for GPU2 done
+21:13:06:816	cffff700	GPU4 DAG creation time - 9587 ms
+21:13:06:816	cffff700	Setting DAG epoch #140 for GPU4 done
+21:13:06:912	d57fa700	GPU3 DAG creation time - 9684 ms
+21:13:06:912	d57fa700	Setting DAG epoch #140 for GPU3 done
+21:13:09:069	ceffd700	got 243 bytes
+21:13:09:069	ceffd700	buf: {"jsonrpc":"2.0","id":0,"result":["0x43c0b1f2740b4cc21be6fccee647644de38436c4f81ac126852bf70ee5ddbed9","0x0986c6a216293f204351dd4d0b5570e9d5979d65e8389cfbc8ffe0b517d9706c","0x00000000dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912adcb8d8422e"]}
+
+21:13:09:069	ceffd700	parse packet: 242
+21:13:09:069	ceffd700	ETH: job changed
+21:13:09:069	ceffd700	new buf size: 0
+21:13:09:069	ceffd700	ETH: 08/25/17-21:13:09 - New job from eth-eu1.nanopool.org:9999
+21:13:09:069	ceffd700	target: 0x00000000dbe6fece (diff: 5000MH), epoch 140(2.09GB)
+21:13:09:070	ceffd700	ETH - Total Speed: 78.158 Mh/s, Total Shares: 0, Rejected: 0, Time: 00:00
+21:13:09:070	ceffd700	ETH: GPU0 15.523 Mh/s, GPU1 15.692 Mh/s, GPU2 15.655 Mh/s, GPU3 15.639 Mh/s, GPU4 15.648 Mh/s
+21:13:14:851	ceffd700	send: {"id":6,"jsonrpc":"2.0","method":"eth_submitHashrate","params":["0x4a7ea46", "0x000000000000000000000000000000000000000000000000000000002518c802"]}
+
+21:13:14:853	ceffd700	ETH: checking pool connection...
+21:13:14:853	ceffd700	send: {"worker": "", "jsonrpc": "2.0", "params": [], "id": 3, "method": "eth_getWork"}
+
+21:13:14:933	ceffd700	got 243 bytes
+21:13:14:933	ceffd700	buf: {"jsonrpc":"2.0","id":0,"result":["0x43c0b1f2740b4cc21be6fccee647644de38436c4f81ac126852bf70ee5ddbed9","0x0986c6a216293f204351dd4d0b5570e9d5979d65e8389cfbc8ffe0b517d9706c","0x00000000dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912adcb8d8422e"]}
+
+21:13:14:933	ceffd700	parse packet: 242
+21:13:14:934	ceffd700	ETH: job is the same
+21:13:14:934	ceffd700	new buf size: 0
+21:13:16:739	189f4b80	Quit signal received...
