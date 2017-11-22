@@ -14,7 +14,10 @@ public class HealthCheckClaymoreTest {
 	@Before
 	public void setUp() throws Exception {
 		Config.setLogDir(new File(new File(new File("target"), "test-classes"), "logs"));
-		new Executable("/bin/sh", "-c", "touch 1503689981_log.txt").exec();
+		Executable exec = new Executable("/bin/sh", "-c", "touch 1503689981_log.txt").exec();
+		if(exec.getResultCode() != 0) {
+			throw new IllegalStateException("Could not touch required logfile.");
+		}
 
 		HealthCheckNvidia nvDriver = new HealthCheckNvidia();
 		nvDriver.sourceLin = "cat ../nvidia-smi.out";
