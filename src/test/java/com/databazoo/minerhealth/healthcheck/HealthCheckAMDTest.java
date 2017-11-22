@@ -8,6 +8,11 @@ import static org.junit.Assert.assertTrue;
 public class HealthCheckAMDTest {
 
 	@Test
+	public void smokeTest() throws Exception {
+		new HealthCheckAMD().isSuitable();
+	}
+
+	@Test
 	public void isSuitable() throws Exception {
 		assertTrue(new HealthCheckAmdImpl(5).isSuitable());
 		assertFalse(new HealthCheckAmdImpl(0).isSuitable());
