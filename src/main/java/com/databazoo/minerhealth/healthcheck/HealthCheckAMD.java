@@ -1,5 +1,8 @@
 package com.databazoo.minerhealth.healthcheck;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.databazoo.components.UIConstants;
 
 /**
@@ -9,18 +12,18 @@ import com.databazoo.components.UIConstants;
  */
 class HealthCheckAMD extends HealthCheckBase {
 
+	private static final Pattern TEMP_REGEX = Pattern.compile(".*?%.*?(\\d+).*");
+
 	/**
-	 * Get command line arguments for detection of available GPUs.
+	 * Get regexp matcher for temperature lines.
 	 *
-	 * @return command line arguments
+	 * Contract: match whole string with {@link Matcher#find()} and provide the temperature value in $1 for replacement.
+	 *
+	 * @param line individual line to match
+	 * @return instance of matcher
 	 */
-	@Override
-	String[] countGPUsQuery() {
-		if (UIConstants.isWindows()) {
-			throw new IllegalStateException("Windows not supported yet.");
-		} else {
-			return new String[]{"echo", "0"};
-		}
+	@Override Matcher getTempMatcher(String line) {
+		return TEMP_REGEX.matcher(line);
 	}
 
 	/**
@@ -29,22 +32,7 @@ class HealthCheckAMD extends HealthCheckBase {
 	 * @return command line arguments
 	 */
 	@Override
-	String[] countTemperatureQuery() {
-		if (UIConstants.isWindows()) {
-			throw new IllegalStateException("Windows not supported yet.");
-		} else {
-			return new String[]{"echo", "0"};
-		}
-	}
-
-	/**
-	 * Get command line arguments for detection of temperature.
-	 *
-	 * @param gpuNumber zero-based GPU number
-	 * @return command line arguments
-	 */
-	@Override
-	String[] countTemperatureQuery(int gpuNumber) {
+	String[] getTemperatureQuery() {
 		if (UIConstants.isWindows()) {
 			throw new IllegalStateException("Windows not supported yet.");
 		} else {
@@ -64,7 +52,7 @@ class HealthCheckAMD extends HealthCheckBase {
 		if (UIConstants.isWindows()) {
 			throw new IllegalStateException("Windows not supported yet.");
 		} else {
-			return new String[]{};
+			throw new IllegalStateException("Fan speed control is not available for AMD.");
 		}
 	}
 }

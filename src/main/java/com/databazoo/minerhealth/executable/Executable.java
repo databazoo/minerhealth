@@ -1,8 +1,5 @@
 package com.databazoo.minerhealth.executable;
 
-import com.databazoo.minerhealth.MinerHealth;
-import com.databazoo.minerhealth.config.Config;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +7,9 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import com.databazoo.minerhealth.MinerHealth;
+import com.databazoo.minerhealth.config.Config;
 
 /**
  * Wrapper for exec()
@@ -57,6 +57,9 @@ public class Executable {
 				try {
 					while ((s = input.readLine()) != null) {
 						//MinerHealth.LOGGER.info(s);
+                        if (outputSB.length() > 0) {
+                            outputSB.append('\n');
+                        }
 						outputSB.append(s);
 					}
 				} catch (IOException ex) {
@@ -72,6 +75,9 @@ public class Executable {
 				try {
 					while ((s = input.readLine()) != null) {
 						MinerHealth.LOGGER.warning(s);
+                        if (outputSB.length() > 0) {
+                            outputSB.append('\n');
+                        }
 						outputSB.append(s);
 					}
 				} catch (IOException ex) {

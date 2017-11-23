@@ -20,7 +20,7 @@ public class HealthCheckAMDTest {
 
 	private class HealthCheckAmdImpl extends HealthCheckAMD {
 
-		private final int gpuCount;
+		private Integer gpuCount;
 
 		HealthCheckAmdImpl(int gpuCount) {
 			this.gpuCount = gpuCount;
@@ -32,8 +32,17 @@ public class HealthCheckAMDTest {
 		 * @return command line arguments
 		 */
 		@Override
-		String[] countGPUsQuery() {
-			return new String[] {"echo", String.valueOf(gpuCount)};
+		String[] getTemperatureQuery() {
+			if (gpuCount != null) {
+				StringBuilder gpuLines = new StringBuilder("'");
+				for (int i = 0; i < gpuCount; i++) {
+					gpuLines.append("| 55%   61C  \n");
+				}
+				gpuLines.append("'");
+				return new String[] { "echo", gpuLines.toString() };
+			} else {
+				return super.getTemperatureQuery();
+			}
 		}
 	}
 

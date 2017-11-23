@@ -1,16 +1,16 @@
 package com.databazoo.minerhealth.healthcheck;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.executable.Executable;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.File;
 
 import static junit.framework.Assert.assertEquals;
 
-@Ignore("For some reason fails on CircleCI")
 public class HealthCheckClaymoreTest {
 
 	@Before
@@ -35,4 +35,18 @@ public class HealthCheckClaymoreTest {
 		assertEquals(14.0876, driver.getPerformancePerGPU());
 	}
 
+	@Test
+	public void checkOldLog() throws Exception {
+		HealthCheckClaymore driver = new HealthCheckClaymoreImpl();
+		driver.check();
+		assertEquals(0.0, driver.getPerformance());
+	}
+
+	private class HealthCheckClaymoreImpl extends HealthCheckClaymore {
+
+		@Override
+		Path getLastLogPath() throws IOException {
+			return new File(Config.getLogDir(), "1503607098_log.txt").toPath();
+		}
+	}
 }
