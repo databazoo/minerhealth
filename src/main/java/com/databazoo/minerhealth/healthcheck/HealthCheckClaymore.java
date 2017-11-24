@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -60,16 +61,9 @@ public class HealthCheckClaymore {
     }
 
     Path getLastLogPath() throws IOException {
-        long timeMillis = System.currentTimeMillis();
         Optional<Path> lastFilePath = Files.list(Config.getLogDir().toPath())
                 .filter(f -> !Files.isDirectory(f))
-                .max((f1, f2) -> {
-                    long f1Modified = f1.toFile().lastModified();
-                    long f2Modified = f2.toFile().lastModified();
-                    MinerHealth.LOGGER.info("Comparing " + f1 + " (last modified " + (timeMillis - f1Modified) + " seconds ago) to "
-                            + f2 + " (last modified " + (timeMillis - f2Modified) + " seconds ago).");
-                    return Long.compare(f1Modified, f2Modified);
-                });
+                .max(Comparator.comparingLong(f -> f.toFile().lastModified()));
 
         if (!lastFilePath.isPresent()) {
             throw new IllegalStateException("No Claymore log available.");
