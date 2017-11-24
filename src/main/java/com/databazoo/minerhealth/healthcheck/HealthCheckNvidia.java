@@ -1,5 +1,8 @@
 package com.databazoo.minerhealth.healthcheck;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.databazoo.components.UIConstants;
 
 /**
@@ -9,21 +12,21 @@ import com.databazoo.components.UIConstants;
  */
 class HealthCheckNvidia extends HealthCheckBase {
 
-    private static final String TEMPERATURES_LIN = " | grep -A1 GeForce | grep '%' | perl -pe 's/^.*?\\%.*?(\\d+).*$/\\1/;'";
+    private static final Pattern TEMP_REGEX = Pattern.compile(".{2,10}?%.{1,10}?(\\d+).*");
+
     String sourceLin = "nvidia-smi";
+    String sourceWin = "nvidia-smi.exe";
 
     /**
-     * Get command line arguments for detection of available GPUs.
+     * Get regexp matcher for temperature lines.
      *
-     * @return command line arguments
+     * Contract: match whole string with {@link Matcher#find()} and provide the temperature value in $1 for replacement.
+     *
+     * @param line individual line to match
+     * @return instance of matcher
      */
-    @Override
-    String[] countGPUsQuery() {
-        if (UIConstants.isWindows()) {
-            throw new IllegalStateException("Windows not supported yet.");
-        } else {
-            return new String[] { "/bin/sh", "-c", sourceLin + " | grep GeForce | wc -l" };
-        }
+    @Override Matcher getTempMatcher(String line) {
+        return TEMP_REGEX.matcher(line);
     }
 
     /**
@@ -32,26 +35,11 @@ class HealthCheckNvidia extends HealthCheckBase {
      * @return command line arguments
      */
     @Override
-    String[] countTemperatureQuery() {
+    String[] getTemperatureQuery() {
         if (UIConstants.isWindows()) {
-            throw new IllegalStateException("Windows not supported yet.");
+            return new String[] { sourceWin };
         } else {
-            return new String[] { "/bin/sh", "-c", sourceLin + TEMPERATURES_LIN + " | sort | tail -1"};
-        }
-    }
-
-    /**
-     * Get command line arguments for detection of temperature.
-     *
-     * @param gpuNumber zero-based GPU number
-     * @return command line arguments
-     */
-    @Override
-    String[] countTemperatureQuery(int gpuNumber) {
-        if (UIConstants.isWindows()) {
-            throw new IllegalStateException("Windows not supported yet.");
-        } else {
-            return new String[] { "/bin/sh", "-c", sourceLin + TEMPERATURES_LIN + " | head -" + (gpuNumber + 1) + " | tail -1"};
+            return new String[] { "/bin/sh", "-c", sourceLin };
         }
     }
 
@@ -67,7 +55,8 @@ class HealthCheckNvidia extends HealthCheckBase {
         if (UIConstants.isWindows()) {
             throw new IllegalStateException("Windows not supported yet.");
         } else {
-            return new String[] { "/bin/sh", "-c", "nvidia-settings -a [gpu:" + gpuNumber + "]/GPUFanControlState=1 -a [fan:" + gpuNumber + "]/GPUTargetFanSpeed=" + rpm};
+            return new String[] { "/bin/sh", "-c",
+                    "nvidia-settings -a [gpu:" + gpuNumber + "]/GPUFanControlState=1 -a [fan:" + gpuNumber + "]/GPUTargetFanSpeed=" + rpm };
         }
     }
 }

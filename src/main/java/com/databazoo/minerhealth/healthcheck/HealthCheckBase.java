@@ -1,6 +1,11 @@
 package com.databazoo.minerhealth.healthcheck;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.regex.Matcher;
 
 import com.databazoo.minerhealth.MinerHealth;
 import com.databazoo.minerhealth.executable.Executable;
@@ -42,6 +47,7 @@ abstract class HealthCheckBase implements HealthCheck {
     private static List<HealthCheck> availableDrivers;
 
     private int temperature;
+    private int gpuCount;
 
     /**
      * Get HealthCheck driver instance
@@ -77,36 +83,48 @@ abstract class HealthCheckBase implements HealthCheck {
      */
     @Override
     public boolean isSuitable() {
-        Executable exec = new Executable(countGPUsQuery()).exec();
-        int gpuCount = 0;
-        boolean result = exec.getResultCode() == 0 &&
-                exec.getOutputStd().matches("[0-9\\-]+") &&
-                (gpuCount = Integer.parseInt(exec.getOutputStd())) > 0;
-        if (gpuCount > 0) {
+        Executable exec = new Executable(getTemperatureQuery()).exec();
+        if (exec.getResultCode() == 0) {
+            gpuCount = 0;
+            HealthCheck.getClaymore().setGpuCount(10000);
+            readTemperatures(exec, (currentGpu, gpuTemp) -> gpuCount++);
             HealthCheck.getClaymore().setGpuCount(gpuCount);
+            return gpuCount > 0;
+        } else {
+            return false;
         }
-        return result;
     }
 
     /**
-     * Individual driver implementation requirement.
+     * Check system temperature. Individual driver implementation requirement.
      */
     @Override
     public void check() {
-        Executable exec = new Executable(countTemperatureQuery()).exec();
+        Executable exec = new Executable(getTemperatureQuery()).exec();
         if (exec.getResultCode() == 0) {
-            temperature = Integer.parseInt(exec.getOutputStd());
+            temperature = 0;
+            readTemperatures(exec, (currentGpu, gpuTemp) -> {
+                if (gpuTemp > temperature) {
+                    temperature = gpuTemp;
+                }
+            });
         } else {
             throw new IllegalStateException("Reading highest temperature failed.");
         }
     }
 
+    /**
+     * Update fan speed (if allowed). Individual driver implementation requirement.
+     */
     @Override
     public void updateFans() {
-        for (int i = 0; i < HealthCheck.getClaymore().getGpuCount(); i++) {
-            Executable exec = new Executable(countTemperatureQuery(i)).exec();
-            if (exec.getResultCode() == 0) {
-                int temp = Integer.parseInt(exec.getOutputStd());
+        Executable exec = new Executable(getTemperatureQuery()).exec();
+        if (exec.getResultCode() == 0) {
+            int[] tempValues = new int[HealthCheck.getClaymore().getGpuCount()];
+            readTemperatures(exec, (currentGpu, gpuTemp) -> tempValues[currentGpu] = gpuTemp);
+
+            for (int i = 0; i < tempValues.length; i++) {
+                int temp = tempValues[i];
                 if (temp > TEMPERATURE_HIGHEST) {
                     setFanSpeed(i, TEMPERATURE_RPM_MAP.get(TEMPERATURE_HIGHEST));
                 } else if (temp < TEMPERATURE_LOWEST) {
@@ -116,12 +134,39 @@ abstract class HealthCheckBase implements HealthCheck {
                 } else {
                     setFanSpeed(i, TEMPERATURE_RPM_MAP.get(temp));
                 }
-            } else {
-                MinerHealth.LOGGER.severe("Reading temperature failed for GPU " + i);
+            }
+        } else {
+            MinerHealth.LOGGER.severe("Reading temperature failed.");
+        }
+    }
+
+    /**
+     * Read lines from executed query and try to match it with tempMatcher. If a match is found notify the consumer of values.
+     *
+     * @param exec executed query
+     * @param consumer consumer for current GPU number (zero-based) and temperature value
+     */
+    private void readTemperatures(Executable exec, BiConsumer<Integer, Integer> consumer) {
+        String[] lines = exec.getOutputStd().split("\n");
+        int currentGpu = 0;
+        for (String line : lines) {
+            if (currentGpu >= HealthCheck.getClaymore().getGpuCount()) {
+                break;
+            }
+            Matcher matcher = getTempMatcher(line);
+            if (matcher.find()) {
+                consumer.accept(currentGpu, Integer.parseInt(matcher.replaceFirst("$1")));
+                currentGpu++;
             }
         }
     }
 
+    /**
+     * Set fan speed.
+     *
+     * @param gpuNumber GPU number (zero-based)
+     * @param rpm 0-100%
+     */
     private void setFanSpeed(int gpuNumber, Integer rpm) {
         Executable exec = new Executable(setFanSpeedQuery(gpuNumber, rpm)).exec();
         if (exec.getResultCode() != 0) {
@@ -130,26 +175,11 @@ abstract class HealthCheckBase implements HealthCheck {
     }
 
     /**
-     * Get command line arguments for detection of available GPUs.
-     *
-     * @return command line arguments
-     */
-    abstract String[] countGPUsQuery();
-
-    /**
      * Get command line arguments for detection of temperature.
      *
      * @return command line arguments
      */
-    abstract String[] countTemperatureQuery();
-
-    /**
-     * Get command line arguments for detection of temperature.
-     *
-     * @param gpuNumber zero-based GPU number
-     * @return command line arguments
-     */
-    abstract String[] countTemperatureQuery(int gpuNumber);
+    abstract String[] getTemperatureQuery();
 
     /**
      * Get command line arguments to set fan speed.
@@ -159,6 +189,16 @@ abstract class HealthCheckBase implements HealthCheck {
      * @return command line arguments
      */
     abstract String[] setFanSpeedQuery(int gpuNumber, Integer rpm);
+
+    /**
+     * Get regexp matcher for temperature lines.
+     *
+     * Contract: match whole string with {@link Matcher#find()} and provide the temperature value in $1 for replacement.
+     *
+     * @param line individual line to match
+     * @return instance of matcher
+     */
+    abstract Matcher getTempMatcher(String line);
 
     /**
      * Get detected temperature.
