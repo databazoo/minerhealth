@@ -27,22 +27,45 @@ public class HealthCheckClaymore {
     private int gpuCount;
     private double performance;
 
+    /**
+     * Get detected GPU count.
+     *
+     * @return detected GPU count
+     */
     public int getGpuCount() {
         return gpuCount;
     }
 
+    /**
+     * Set detected GPU count.
+     *
+     * @param gpuCount detected GPU count
+     */
     void setGpuCount(int gpuCount) {
         this.gpuCount = gpuCount;
     }
 
+    /**
+     * Get detected performance.
+     *
+     * @return detected performance
+     */
     public double getPerformance() {
         return performance;
     }
 
+    /**
+     * Get detected performance per GPU.
+     *
+     * @return detected performance per GPU
+     */
     public double getPerformancePerGPU() {
         return performance / gpuCount * 1.0;
     }
 
+    /**
+     * Find latest log and fetch total output out of it.
+     */
     void check() {
         try {
             Path path = getLastLogPath();
@@ -60,6 +83,12 @@ public class HealthCheckClaymore {
 
     }
 
+    /**
+     * Find the latest file in {@link Config#logDir}.
+     *
+     * @return the latest file
+     * @throws IOException in case of IO error
+     */
     Path getLastLogPath() throws IOException {
         Optional<Path> lastFilePath = Files.list(Config.getLogDir().toPath())
                 .filter(f -> !Files.isDirectory(f))
@@ -72,6 +101,13 @@ public class HealthCheckClaymore {
         }
     }
 
+    /**
+     * Parse given Claymore log.
+     *
+     * @param file given log
+     * @return performance
+     * @throws IOException in case of IO error
+     */
     private double getPerformanceFromFile(File file) throws IOException {
         double totalValue = 0;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -88,6 +124,13 @@ public class HealthCheckClaymore {
         return totalValue;
     }
 
+    /**
+     * Calculate now()-modification in seconds.
+     *
+     * @param path given file
+     * @return last modified
+     * @throws IOException in case of IO error
+     */
     private long getSecondsFromModification(Path path) throws IOException {
         BasicFileAttributes basicAttribs = Files.readAttributes(path, BasicFileAttributes.class);
         return (System.currentTimeMillis() - basicAttribs.lastModifiedTime().to(TimeUnit.MILLISECONDS)) / 1000;

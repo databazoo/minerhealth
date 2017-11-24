@@ -1,11 +1,20 @@
 package com.databazoo.minerhealth.healthcheck;
 
+import java.io.File;
+
+import com.databazoo.minerhealth.config.Config;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class HealthCheckAMDTest {
+
+	@Before
+	public void setUp() throws Exception {
+		Config.setLogDir(new File(new File(new File("target"), "test-classes"), "logs"));
+	}
 
 	@Test
 	public void smokeTest() throws Exception {

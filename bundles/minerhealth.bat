@@ -3,14 +3,17 @@
 
 REM ############################################################################
 
-REM Folder where Claymore generates logs
-SET logDir=Clay98
+REM Your client ID
+SET clientID=c107de54-40ef-43a4-99e3-acb5828c18ad
 
 REM Provide a unique name for each machine here.
 REM By default machine's hostname is used.
 SET machine=%COMPUTERNAME%
 
-REM Enable or disable active fan control according to temperature
+REM Folder where Claymore generates logs
+SET logDir=Clay98
+
+REM Enable or disable active fan control according to temperature (if supported)
 SET fanControl=1
 
 REM Enable or disable remote restart (from web GUI)
@@ -19,7 +22,12 @@ SET remoteReboot=1
 REM Report interval (seconds)
 SET reportInterval=20
 
+REM If temperature or performance limit is breached, how many times should we
+REM recheck before rebooting the machine?
+REM Example: reportInterval=20 and recheckAttemptsLimit=6 make it 120 seconds.
+SET recheckAttemptsLimit=6
+
 REM ############################################################################
 
 REM Running
-java -jar minerhealth.jar %machine% %logDir% %fanControl% %remoteReboot% %reportInterval%
+java -jar minerhealth.jar %clientID% %machine% %logDir% %fanControl% %remoteReboot% %reportInterval%

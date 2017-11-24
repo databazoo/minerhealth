@@ -18,22 +18,28 @@ public class Config {
 
     public static final String APP_VERSION = UIConstants.getAppVersion();
     public static final String APP_NAME_BASE = UIConstants.getProperty("app.name");
-    public static final String APP_DEFAULT_URL = UIConstants.getProperty("app.url");
+    public static final String APP_REST_URL = UIConstants.getProperty("app.rest.url");
     public static final String APP_COPYRIGHT = UIConstants.getProperty("app.copyright");
 
-    private static final int EXPECTED_ARGS = 5;
+    private static final int EXPECTED_ARGS = 7;
     private static final int MIN_INTERVAL = 5;
 
+    private String clientID;
     private String machineName;
     private File logDir;
     private boolean fanControl;
     private boolean remoteReboot;
     private int reportInterval;
+    private int recheckAttemptsLimit;
 
     private double minTemp = 0;
     private double maxTemp = 999;
     private double minPerformance = 0;
     private double minPerformancePerGPU = 0;
+
+    public static String getClientID() {
+        return INSTANCE.clientID;
+    }
 
     public static String getMachineName() {
         return INSTANCE.machineName;
@@ -55,8 +61,16 @@ public class Config {
         return INSTANCE.reportInterval;
     }
 
+    public static int getRecheckAttemptsLimit() {
+        return INSTANCE.recheckAttemptsLimit;
+    }
+
     public static String getConfigFileName() {
         return "minerhealth." + (UIConstants.isWindows() ? "bat" : "sh");
+    }
+
+    public static void setClientID(String clientID) {
+        INSTANCE.clientID = clientID;
     }
 
     public static void setMachineName(String machineName) {
@@ -77,6 +91,10 @@ public class Config {
 
     public static void setReportInterval(int reportInterval) {
         INSTANCE.reportInterval = reportInterval;
+    }
+
+    public static void setRecheckAttemptsLimit(int recheckAttemptsLimit) {
+        INSTANCE.recheckAttemptsLimit = recheckAttemptsLimit;
     }
 
     public static double getMinTemp() {
@@ -125,18 +143,20 @@ public class Config {
             throw new IllegalArgumentException("Expected " + EXPECTED_ARGS + " arguments, but received " + args.length);
         }
 
-        INSTANCE.machineName = args[0];
-        INSTANCE.logDir = new File(args[1]);
-        INSTANCE.fanControl = getBoolean(args[2]);
-        INSTANCE.remoteReboot = getBoolean(args[3]);
-        INSTANCE.reportInterval = Integer.parseInt(args[4]);
+        setClientID(args[0]);
+        setMachineName(args[1]);
+        setLogDir(new File(args[2]));
+        setFanControl(getBoolean(args[3]));
+        setRemoteReboot(getBoolean(args[4]));
+        setReportInterval(Integer.parseInt(args[5]));
+        setRecheckAttemptsLimit(Integer.parseInt(args[6]));
 
-        if (!INSTANCE.logDir.exists()) {
-            throw new IllegalArgumentException("Folder " + INSTANCE.logDir.getAbsolutePath() + " does not exist. " +
+        if (!getLogDir().exists()) {
+            throw new IllegalArgumentException("Folder " + getLogDir().getAbsolutePath() + " does not exist. " +
                     "Please set 'logDir' variable properly in " + getConfigFileName());
         }
 
-        if (INSTANCE.reportInterval < MIN_INTERVAL) {
+        if (getReportInterval() < MIN_INTERVAL) {
             throw new IllegalArgumentException("Report interval can not be less than " + MIN_INTERVAL + ". " +
                     "Please set 'reportInterval' variable properly in " + getConfigFileName());
         }
@@ -144,12 +164,24 @@ public class Config {
         LOGGER.info(INSTANCE.toString());
     }
 
+    /**
+     * Read boolean parameters.
+     *
+     * @param arg true for 1, yes, true
+     * @return boolean value
+     */
     private static boolean getBoolean(String arg) {
         return arg.equalsIgnoreCase("1") || arg.equalsIgnoreCase("yes") || arg.equalsIgnoreCase("true");
     }
 
+    /**
+     * Info dump.
+     *
+     * @return info string
+     */
     @Override public String toString() {
-        return "Config {" +
+        return APP_NAME_BASE + " v" + APP_VERSION + " {" +
+                "\n\tclientID = " + getClientID() +
                 "\n\tmachineName = " + machineName +
                 "\n\tlogDir = " + logDir.getAbsolutePath() +
                 "\n\tfanControl = " + fanControl +
