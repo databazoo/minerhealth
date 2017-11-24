@@ -63,7 +63,10 @@ public class HealthCheckClaymore {
         long timeMillis = System.currentTimeMillis();
         Optional<Path> lastFilePath = Files.list(Config.getLogDir().toPath())
                 .filter(f -> !Files.isDirectory(f))
-                .max((f1, f2) -> (int) (timeMillis - f1.toFile().lastModified()));
+                .max((f1, f2) -> {
+                    MinerHealth.LOGGER.info("Path " + f1 + " last modified " + (timeMillis - f1.toFile().lastModified()) + " seconds ago.");
+                    return (int) (timeMillis - f1.toFile().lastModified());
+                });
 
         if (!lastFilePath.isPresent()) {
             throw new IllegalStateException("No Claymore log available.");
