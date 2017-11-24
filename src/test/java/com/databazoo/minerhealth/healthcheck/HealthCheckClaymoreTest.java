@@ -15,7 +15,7 @@ import static junit.framework.Assert.assertEquals;
 public class HealthCheckClaymoreTest {
 
     @BeforeClass
-    public void setUpClass() throws Exception {
+    public static void setUpClass() throws Exception {
         Thread.sleep(2000);
     }
 
