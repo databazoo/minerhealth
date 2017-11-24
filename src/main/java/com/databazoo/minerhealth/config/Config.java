@@ -18,7 +18,7 @@ public class Config {
 
     public static final String APP_VERSION = UIConstants.getAppVersion();
     public static final String APP_NAME_BASE = UIConstants.getProperty("app.name");
-    public static final String APP_DEFAULT_URL = UIConstants.getProperty("app.url");
+    public static final String APP_REST_URL = UIConstants.getProperty("app.rest.url");
     public static final String APP_COPYRIGHT = UIConstants.getProperty("app.copyright");
 
     private static final int EXPECTED_ARGS = 7;
