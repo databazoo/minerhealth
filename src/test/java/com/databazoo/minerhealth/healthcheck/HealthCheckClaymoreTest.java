@@ -7,16 +7,22 @@ import java.nio.file.Path;
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.executable.Executable;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
 public class HealthCheckClaymoreTest {
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		Thread.sleep(2000);
+	}
+
     @Before
 	public void setUp() throws Exception {
 		Config.setLogDir(new File(new File(new File("target"), "test-classes"), "logs"));
-        Executable exec = new Executable("/bin/sh", "-c", "touch 1503689981_log.txt && touch -t 1701011200 1503607098_log.txt").exec();
+		Executable exec = new Executable("/bin/sh", "-c", "touch -a -m 1503689981_log.txt && touch -a -m -t 1701011200 1503607098_log.txt").exec();
 		if(exec.getResultCode() != 0) {
 			throw new IllegalStateException("Could not touch required logfile.");
 		}
