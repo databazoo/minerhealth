@@ -1,6 +1,7 @@
 package com.databazoo.minerhealth.reporter;
 
 import com.databazoo.components.UIConstants;
+import com.databazoo.minerhealth.MinerHealth;
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.executable.Executable;
 import com.databazoo.minerhealth.healthcheck.HealthCheck;
@@ -11,22 +12,28 @@ import com.databazoo.minerhealth.healthcheck.HealthCheckClaymore;
  */
 public class Reporter {
 
+    private int temperature;
+    private double performance;
+    private double performancePerGPU;
+    private int temperatureRecheckAttempt;
+    private int performanceRecheckAttempt;
+
     /**
      * The usual "All up" report with all metrics included.
      *
      * If there is no validation on server (like performance and temperature criteria) this method checks the values locally with
-     * {@link #validateMetrics(int, double, double, double)}.
+     * {@link #validateMetrics(double, double, double)}.
      *
      * @param driver HealthCheck driver that completed the last check
      * @param claymore Claymore log parser that completed the last check
      */
     public void reportToServer(HealthCheck driver, HealthCheckClaymore claymore) {
-        final int gpuCount = claymore.getGpuCount();
-        final double temperature = driver.getTemperature();
-        final double performance = claymore.getPerformance();
-        final double performancePerGPU = claymore.getPerformancePerGPU();
+        int gpuCount = claymore.getGpuCount();
+        temperature = driver.getTemperature();
+        performance = claymore.getPerformance();
+        performancePerGPU = claymore.getPerformancePerGPU();
 
-        validateResponse(
+        boolean responseOK = validateResponse(
                 Report.up(Config.getClientID(), Config.getMachineName(),
                         gpuCount,
                         temperature,
@@ -34,7 +41,11 @@ public class Reporter {
                 ).send()
         );
 
-        validateMetrics(gpuCount, temperature, performance, performancePerGPU);
+        boolean metricsOK = validateMetrics(temperature, performance, performancePerGPU);
+
+        if (responseOK && metricsOK) {
+            resetAttempts();
+        }
     }
 
     /**
@@ -49,26 +60,70 @@ public class Reporter {
     /**
      * Manual validation of metrics in case we did not receive OVERHEAT or UNDERPERFORM from server directly.
      *
-     * @param gpuCount detected count of GPUs
      * @param temperature detected temperature
      * @param performance detected performance
      * @param performancePerGPU detected performance per GPU
+     * @return is all valid?
      */
-    private void validateMetrics(int gpuCount, double temperature, double performance, double performancePerGPU) {
+    boolean validateMetrics(double temperature, double performance, double performancePerGPU) {
+        if (Config.getMinTemp() > 0 && temperature < Config.getMinTemp()) {
+            overheat();
+        } else if (Config.getMaxTemp() > 0 && temperature > Config.getMaxTemp()) {
+            overheat();
+        } else if (Config.getMinPerformance() > 0 && performance < Config.getMinPerformance()) {
+            underperform();
+        } else if (Config.getMinPerformancePerGPU() > 0 && performancePerGPU < Config.getMinPerformancePerGPU()) {
+            underperform();
+        } else {
+            return true;
+        }
+        return false;
     }
 
     /**
      * Check for actions in response and parse config if sent.
      *
      * @param response the whole response string
+     * @return is all valid?
      */
-    private void validateResponse(String response) {
+    boolean validateResponse(String response) {
         if (response.equalsIgnoreCase("REMOTE_RESTART") && Config.isRemoteReboot()) {
             restart();
-        } else if (response.equalsIgnoreCase("OVERHEAT") || response.equalsIgnoreCase("UNDERPERFORM")) {
-            restart();
+        } else if (response.equalsIgnoreCase("OVERHEAT")) {
+            overheat();
+        } else if (response.equalsIgnoreCase("UNDERPERFORM")) {
+            underperform();
         } else if (response.startsWith("CONFIG")) {
             config(response.split("\\s+"));
+            return true;
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    private void resetAttempts() {
+        temperatureRecheckAttempt = 0;
+        performanceRecheckAttempt = 0;
+    }
+
+    private void overheat() {
+        temperatureRecheckAttempt++;
+        if (temperatureRecheckAttempt > Config.getRecheckAttemptsLimit()) {
+            MinerHealth.LOGGER.warning("Temperature limit breached at " + temperature + ". Will now reboot.");
+            restart();
+        } else {
+            MinerHealth.LOGGER.warning("Temperature limit breached at " + temperature + ". Will recheck (attempt " + temperatureRecheckAttempt + ").");
+        }
+    }
+
+    private void underperform() {
+        performanceRecheckAttempt++;
+        if (performanceRecheckAttempt > Config.getRecheckAttemptsLimit()) {
+            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU). Will now reboot.");
+            restart();
+        } else {
+            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU). Will recheck (attempt " + performanceRecheckAttempt + ").");
         }
     }
 
@@ -111,7 +166,7 @@ public class Reporter {
     /**
      * Report and perform a reboot.
      */
-    private void restart() {
+    void restart() {
         Report
                 .restart(Config.getClientID(), Config.getMachineName())
                 .send();

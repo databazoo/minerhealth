@@ -22,6 +22,11 @@ SET remoteReboot=1
 REM Report interval (seconds)
 SET reportInterval=20
 
+REM If temperature or performance limit is breached, how many times should we
+REM recheck before rebooting the machine?
+REM Example: reportInterval=20 and recheckAttemptsLimit=6 make it 120 seconds.
+SET recheckAttemptsLimit=6
+
 REM ############################################################################
 
 REM Running

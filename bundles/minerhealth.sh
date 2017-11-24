@@ -21,7 +21,12 @@ remoteReboot=1
 # Report interval (seconds)
 reportInterval=20
 
+# If temperature or performance limit is breached, how many times should we
+# recheck before rebooting the machine?
+# Example: reportInterval=20 and recheckAttemptsLimit=6 make it 120 seconds.
+recheckAttemptsLimit=6
+
 ################################################################################
 
 # Running
-java -jar "minerhealth.jar" $clientID $machine $logDir $fanControl $remoteReboot $reportInterval
+java -jar "minerhealth.jar" $clientID $machine $logDir $fanControl $remoteReboot $reportInterval $recheckAttemptsLimit

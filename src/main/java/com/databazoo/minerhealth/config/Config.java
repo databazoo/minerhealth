@@ -21,7 +21,7 @@ public class Config {
     public static final String APP_DEFAULT_URL = UIConstants.getProperty("app.url");
     public static final String APP_COPYRIGHT = UIConstants.getProperty("app.copyright");
 
-    private static final int EXPECTED_ARGS = 6;
+    private static final int EXPECTED_ARGS = 7;
     private static final int MIN_INTERVAL = 5;
 
     private String clientID;
@@ -30,6 +30,7 @@ public class Config {
     private boolean fanControl;
     private boolean remoteReboot;
     private int reportInterval;
+    private int recheckAttemptsLimit;
 
     private double minTemp = 0;
     private double maxTemp = 999;
@@ -60,6 +61,10 @@ public class Config {
         return INSTANCE.reportInterval;
     }
 
+    public static int getRecheckAttemptsLimit() {
+        return INSTANCE.recheckAttemptsLimit;
+    }
+
     public static String getConfigFileName() {
         return "minerhealth." + (UIConstants.isWindows() ? "bat" : "sh");
     }
@@ -86,6 +91,10 @@ public class Config {
 
     public static void setReportInterval(int reportInterval) {
         INSTANCE.reportInterval = reportInterval;
+    }
+
+    public static void setRecheckAttemptsLimit(int recheckAttemptsLimit) {
+        INSTANCE.recheckAttemptsLimit = recheckAttemptsLimit;
     }
 
     public static double getMinTemp() {
@@ -140,6 +149,7 @@ public class Config {
         setFanControl(getBoolean(args[3]));
         setRemoteReboot(getBoolean(args[4]));
         setReportInterval(Integer.parseInt(args[5]));
+        setRecheckAttemptsLimit(Integer.parseInt(args[6]));
 
         if (!getLogDir().exists()) {
             throw new IllegalArgumentException("Folder " + getLogDir().getAbsolutePath() + " does not exist. " +

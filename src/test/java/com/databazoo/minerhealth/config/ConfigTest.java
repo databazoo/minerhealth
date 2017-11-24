@@ -15,12 +15,12 @@ public class ConfigTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void initArgsInvalid2() {
-        Config.init(new String[] {"", "", "", "", "", ""});
+        Config.init(new String[] {"", "", "", "", "", "", ""});
     }
 
     @Test
     public void initArgs() {
-        Config.init(new String[] { "c107de54-40ef-43a4-99e3-acb5828c18ad", "R1", "./", "1", "true", "15" });
+        Config.init(new String[] { "c107de54-40ef-43a4-99e3-acb5828c18ad", "R1", "./", "1", "true", "15", "6" });
 
         assertEquals(Config.getClientID(), "c107de54-40ef-43a4-99e3-acb5828c18ad");
         assertEquals(Config.getMachineName(), "R1");
@@ -28,7 +28,7 @@ public class ConfigTest {
         assertTrue(Config.isFanControl());
         assertTrue(Config.isRemoteReboot());
 
-        Config.init(new String[] { "c107de54-40ef-43a4-99e3-acb5828c18ad", "R2", "..", "yes", "0", "15" });
+        Config.init(new String[] { "c107de54-40ef-43a4-99e3-acb5828c18ad", "R2", "..", "yes", "0", "15", "6" });
 
         assertEquals(Config.getClientID(), "c107de54-40ef-43a4-99e3-acb5828c18ad");
         assertEquals(Config.getMachineName(), "R2");
