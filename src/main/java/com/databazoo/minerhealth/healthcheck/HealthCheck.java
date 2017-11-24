@@ -44,6 +44,8 @@ public interface HealthCheck {
      * The entry point to the whole health check implementation
      */
     static void runChecks() {
+        getReporter().reportStart();
+
         new Timer("Check Timer").schedule(new TimerTask() {
 
             @Override public void run() {

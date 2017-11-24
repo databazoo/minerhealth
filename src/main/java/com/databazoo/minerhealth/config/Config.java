@@ -154,10 +154,21 @@ public class Config {
         LOGGER.info(INSTANCE.toString());
     }
 
+    /**
+     * Read boolean parameters.
+     *
+     * @param arg true for 1, yes, true
+     * @return boolean value
+     */
     private static boolean getBoolean(String arg) {
         return arg.equalsIgnoreCase("1") || arg.equalsIgnoreCase("yes") || arg.equalsIgnoreCase("true");
     }
 
+    /**
+     * Info dump.
+     *
+     * @return info string
+     */
     @Override public String toString() {
         return APP_NAME_BASE + " v" + APP_VERSION + " {" +
                 "\n\tclientID = " + getClientID() +

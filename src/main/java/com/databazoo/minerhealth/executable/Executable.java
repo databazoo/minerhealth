@@ -45,61 +45,65 @@ public class Executable {
 		return resultCode;
 	}
 
-	public Executable exec() {
-		try {
-			final Process p = Runtime.getRuntime().exec(args, new String[0], Config.getLogDir());
+    /**
+     * Run the commands. Retrieves stdin and stderr as strings.
+     *
+     * @return this
+     */
+    public Executable exec() {
+        try {
+            final Process p = Runtime.getRuntime().exec(args, new String[0], Config.getLogDir());
 
-			CountDownLatch latch = new CountDownLatch(2);
-			THREAD_POOL.execute(() -> {
-				String s;
-				StringBuilder outputSB = new StringBuilder();
-				BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				try {
-					while ((s = input.readLine()) != null) {
-						//MinerHealth.LOGGER.info(s);
+            CountDownLatch latch = new CountDownLatch(2);
+            THREAD_POOL.execute(() -> {
+                String s;
+                StringBuilder outputSB = new StringBuilder();
+                BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                try {
+                    while ((s = input.readLine()) != null) {
+                        //MinerHealth.LOGGER.info(s);
                         if (outputSB.length() > 0) {
                             outputSB.append('\n');
                         }
-						outputSB.append(s);
-					}
-				} catch (IOException ex) {
-					MinerHealth.LOGGER.severe("stdin failed: " + ex.getMessage());
-				}
-				outputStd.append(outputSB.toString());
-				latch.countDown();
-			});
-			THREAD_POOL.execute(() -> {
-				String s;
-				StringBuilder outputSB = new StringBuilder();
-				BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-				try {
-					while ((s = input.readLine()) != null) {
-						MinerHealth.LOGGER.warning(s);
+                        outputSB.append(s);
+                    }
+                } catch (IOException ex) {
+                    MinerHealth.LOGGER.severe("stdin failed: " + ex.getMessage());
+                }
+                outputStd.append(outputSB.toString());
+                latch.countDown();
+            });
+            THREAD_POOL.execute(() -> {
+                String s;
+                StringBuilder outputSB = new StringBuilder();
+                BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                try {
+                    while ((s = input.readLine()) != null) {
+                        MinerHealth.LOGGER.warning(s);
                         if (outputSB.length() > 0) {
                             outputSB.append('\n');
                         }
-						outputSB.append(s);
-					}
-				} catch (IOException ex) {
-					MinerHealth.LOGGER.severe("errin failed: " + ex);
-				}
-				outputErr.append(outputSB.toString());
-				latch.countDown();
-			});
+                        outputSB.append(s);
+                    }
+                } catch (IOException ex) {
+                    MinerHealth.LOGGER.severe("errin failed: " + ex);
+                }
+                outputErr.append(outputSB.toString());
+                latch.countDown();
+            });
 
-			// Wait for process to end
-			resultCode = p.waitFor();
-			//MinerHealth.LOGGER.info("exit code: "+ resultCode);
+            // Wait for process to end
+            resultCode = p.waitFor();
+            //MinerHealth.LOGGER.info("exit code: "+ resultCode);
 
-			// Wait for threads to collect all data
-			latch.await();
+            // Wait for threads to collect all data
+            latch.await();
 
-			return this;
-		}
-		catch (Exception ex) {
-			MinerHealth.LOGGER.severe("Call "+Arrays.toString(args)+" failed: " + ex);
-			resultCode = -1;
-			return this;
-		}
-	}
+            return this;
+        } catch (Exception ex) {
+            MinerHealth.LOGGER.severe("Call "+Arrays.toString(args)+" failed: " + ex);
+            resultCode = -1;
+            return this;
+        }
+    }
 }

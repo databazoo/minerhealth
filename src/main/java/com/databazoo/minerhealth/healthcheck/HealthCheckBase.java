@@ -71,6 +71,11 @@ abstract class HealthCheckBase implements HealthCheck {
         throw new IllegalStateException("No driver detected. You should be running AMD or nVidia original drivers.");
     }
 
+    /**
+     * Saves the driver list. This is defined externally to prevent cyclic class reference.
+     *
+     * @param drivers driver list
+     */
     static void addDrivers(HealthCheck... drivers) {
         availableDrivers = Arrays.asList(drivers);
     }
