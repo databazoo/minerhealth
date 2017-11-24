@@ -7,17 +7,11 @@ import java.nio.file.Path;
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.executable.Executable;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
 public class HealthCheckClaymoreTest {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        Thread.sleep(2000);
-    }
 
     @Before
 	public void setUp() throws Exception {

@@ -64,8 +64,11 @@ public class HealthCheckClaymore {
         Optional<Path> lastFilePath = Files.list(Config.getLogDir().toPath())
                 .filter(f -> !Files.isDirectory(f))
                 .max((f1, f2) -> {
-                    MinerHealth.LOGGER.info("Path " + f1 + " last modified " + (timeMillis - f1.toFile().lastModified()) + " seconds ago.");
-                    return (int) (timeMillis - f1.toFile().lastModified());
+                    long f1Modified = f1.toFile().lastModified();
+                    long f2Modified = f2.toFile().lastModified();
+                    MinerHealth.LOGGER.info("Comparing " + f1 + " (last modified " + (timeMillis - f1Modified) + " seconds ago) to "
+                            + f2 + " (last modified " + (timeMillis - f2Modified) + " seconds ago).");
+                    return Long.compare(f1Modified, f2Modified);
                 });
 
         if (!lastFilePath.isPresent()) {
