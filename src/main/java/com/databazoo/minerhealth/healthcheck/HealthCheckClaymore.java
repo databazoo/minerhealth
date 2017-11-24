@@ -59,9 +59,10 @@ public class HealthCheckClaymore {
     }
 
     Path getLastLogPath() throws IOException {
+        long timeMillis = System.currentTimeMillis();
         Optional<Path> lastFilePath = Files.list(Config.getLogDir().toPath())
                 .filter(f -> !Files.isDirectory(f))
-                .max((f1, f2) -> (int) (f1.toFile().lastModified() - f2.toFile().lastModified()));
+                .max((f1, f2) -> (int) (timeMillis - f1.toFile().lastModified()));
 
         if (!lastFilePath.isPresent()) {
             throw new IllegalStateException("No Claymore log available.");
