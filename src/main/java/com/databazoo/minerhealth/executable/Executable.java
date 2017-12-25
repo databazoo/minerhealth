@@ -61,7 +61,6 @@ public class Executable {
                 BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 try {
                     while ((s = input.readLine()) != null) {
-                        //MinerHealth.LOGGER.info(s);
                         if (outputSB.length() > 0) {
                             outputSB.append('\n');
                         }

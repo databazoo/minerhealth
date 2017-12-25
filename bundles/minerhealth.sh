@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ################################################################################
 
@@ -29,4 +29,14 @@ recheckAttemptsLimit=6
 ################################################################################
 
 # Running
+runFanUpdateAndClear() {
+    sleep 5
+    while : ; do
+        ./fan.sh
+        echo "Applying fan configuration"
+        echo "#!/usr/bin/env bash" > fan.sh
+        sleep $reportInterval
+    done
+}
+runFanUpdateAndClear &
 java -jar "minerhealth.jar" $clientID $machine $logDir $fanControl $remoteReboot $reportInterval $recheckAttemptsLimit

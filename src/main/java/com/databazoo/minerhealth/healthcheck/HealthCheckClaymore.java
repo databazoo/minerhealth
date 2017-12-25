@@ -74,7 +74,7 @@ public class HealthCheckClaymore {
                 performance = 0;
                 MinerHealth.LOGGER.warning("Logfile " + path + " has not been modified for " + seconds + " seconds. Ignoring reported output.");
             } else {
-                MinerHealth.LOGGER.warning("Reading " + path + " last modified " + seconds + " seconds ago.");
+                MinerHealth.LOGGER.info("Reading " + path + " last modified " + seconds + " seconds ago.");
                 performance = getPerformanceFromFile(path.toFile());
             }
         } catch (IOException e) {
