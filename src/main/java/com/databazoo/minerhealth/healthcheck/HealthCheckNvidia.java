@@ -56,7 +56,10 @@ class HealthCheckNvidia extends HealthCheckBase {
             throw new IllegalStateException("Windows not supported yet.");
         } else {
             return new String[] { "/bin/sh", "-c",
-                    "nvidia-settings -a [gpu:" + gpuNumber + "]/GPUFanControlState=1 -a [fan:" + gpuNumber + "]/GPUTargetFanSpeed=" + rpm };
+                    "echo 'nvidia-settings" +
+                            " -a [gpu:" + gpuNumber + "]/GPUFanControlState=1" +
+                            " -a [fan:" + gpuNumber + "]/GPUTargetFanSpeed=" + rpm + "'" +
+                            " >> " + System.getProperty("user.dir") + "/fan.sh"};
         }
     }
 }

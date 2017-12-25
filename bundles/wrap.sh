@@ -12,6 +12,6 @@ if [ "$1" != "" ]; then
     chmod 0755 ./minerhealth.jar
 
     # pack
-    zip -9 -r "../minerhealth.v$1.zip" "./minerhealth.jar" "./minerhealth.sh" "./minerhealth.bat" README.TXT
+    zip -9 -r "../minerhealth.v$1.zip" "./minerhealth.jar" "./fan.sh" "./minerhealth.sh" "./minerhealth.bat" README.TXT
 
 fi

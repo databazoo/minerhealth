@@ -172,7 +172,7 @@ abstract class HealthCheckBase implements HealthCheck {
      * @param gpuNumber GPU number (zero-based)
      * @param rpm 0-100%
      */
-    private void setFanSpeed(int gpuNumber, Integer rpm) {
+    void setFanSpeed(int gpuNumber, Integer rpm) {
         Executable exec = new Executable(setFanSpeedQuery(gpuNumber, rpm)).exec();
         if (exec.getResultCode() != 0) {
             throw new IllegalStateException("Setting fan speed failed for GPU " + gpuNumber);

@@ -47,6 +47,14 @@ public class HealthCheckNvidiaTest {
         assertEquals(5, driver.setFanSpeedQueryCalled);
     }
 
+    @Test
+    public void updateFansReal() throws Exception {
+        HealthCheckNvidia driver = new HealthCheckNvidia();
+        driver.sourceLin = "cat ../nvidia-smi.out";
+        driver.isSuitable();
+        driver.setFanSpeed(0, 55);
+    }
+
     private class HealthCheckNvidiaImpl extends HealthCheckNvidia {
 
         private Integer gpuCount;
