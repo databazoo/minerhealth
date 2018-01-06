@@ -30,7 +30,7 @@ public class Config {
     private boolean fanControl;
     private boolean remoteReboot;
     private int reportInterval;
-    private int recheckAttemptsLimit;
+    private int recheckAttemptsLimit = 6;
 
     private double minTemp = 0;
     private double maxTemp = 999;
