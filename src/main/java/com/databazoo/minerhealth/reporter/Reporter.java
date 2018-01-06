@@ -33,6 +33,11 @@ public class Reporter {
         performance = claymore.getPerformance();
         performancePerGPU = claymore.getPerformancePerGPU();
 
+        MinerHealth.LOGGER.info("GPUs: " + gpuCount +
+                " Temperature: " + temperature +
+                " Performance: " + new Double(performance).longValue() +
+                " (" + new Double(performancePerGPU).longValue() + " per GPU)");
+
         boolean responseOK = validateResponse(
                 Report.up(Config.getClientID(), Config.getMachineName(),
                         gpuCount,
@@ -87,6 +92,7 @@ public class Reporter {
      * @return is all valid?
      */
     boolean validateResponse(String response) {
+        MinerHealth.LOGGER.info("Server response: " + response);
         if (response.equalsIgnoreCase("REMOTE_RESTART") && Config.isRemoteReboot()) {
             restart();
         } else if (response.equalsIgnoreCase("OVERHEAT")) {
