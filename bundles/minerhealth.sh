@@ -32,8 +32,8 @@ recheckAttemptsLimit=6
 runFanUpdateAndClear() {
     sleep 5
     while : ; do
-        ./fan.sh
         echo "Applying fan configuration"
+        ./fan.sh > /dev/null
         echo "#!/usr/bin/env bash" > fan.sh
         sleep $reportInterval
     done
