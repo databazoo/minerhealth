@@ -31,7 +31,7 @@ public class MinerHealth {
             LOGGER.severe(e.getMessage());
             e.printStackTrace();
         }
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
     }
 
     /**
@@ -53,7 +53,7 @@ public class MinerHealth {
         HealthCheck.runChecks();
     }
 
-    private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+    private static class UncaughtExceptionHandlerImpl implements Thread.UncaughtExceptionHandler {
         @Override
         public void uncaughtException(Thread thread, Throwable ex) {
             StringBuilder out = new StringBuilder();

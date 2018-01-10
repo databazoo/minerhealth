@@ -23,8 +23,8 @@ class Report {
      * @param performance detected performance
      * @return report instance
      */
-    static Report up(String clientID, String machineName, int gpuCount, double temperature, double performance) {
-        return new Report(clientID, machineName, "up", gpuCount, temperature, performance);
+    static Report up(String clientID, String machineName, int gpuCount, double temperature, double performance, int shares) {
+        return new Report(clientID, machineName, "up", gpuCount, temperature, performance, shares);
     }
 
     /**
@@ -55,14 +55,16 @@ class Report {
     private int gpuCount;
     private double temperature;
     private double performance;
+    private int shares;
 
-    public Report(String clientID, String machineName, String action, int gpuCount, double temperature, double performance) {
+    public Report(String clientID, String machineName, String action, int gpuCount, double temperature, double performance, int shares) {
         this.clientID = clientID;
         this.machineName = machineName;
         this.action = action;
         this.gpuCount = gpuCount;
         this.temperature = temperature;
         this.performance = performance;
+        this.shares = shares;
     }
 
     private Report(String clientID, String machineName, String action) {
@@ -105,6 +107,9 @@ class Report {
         }
         if (performance > 0) {
             restUrl.append("&").append("output").append("=").append(performance);
+        }
+        if (shares > 0) {
+            restUrl.append("&").append("shares").append("=").append(shares);
         }
         return new URL(restUrl.toString());
     }

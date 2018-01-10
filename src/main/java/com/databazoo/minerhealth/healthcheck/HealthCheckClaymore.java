@@ -22,10 +22,11 @@ import com.databazoo.minerhealth.config.Config;
  */
 public class HealthCheckClaymore {
 
-    private static final Pattern OUTPUT_REGEX = Pattern.compile(".*?Total Speed.*?(\\d+(\\.\\d+)?).*");
+    private static final Pattern OUTPUT_REGEX = Pattern.compile(".*?Total Speed.*?(\\d+(\\.\\d+)?).*?Total Shares.*?(\\d+).*");
 
     private int gpuCount;
     private double performance;
+    private int shares;
 
     /**
      * Get detected GPU count.
@@ -55,6 +56,15 @@ public class HealthCheckClaymore {
     }
 
     /**
+     * Get detected shares.
+     *
+     * @return detected shares
+     */
+    public int getShares() {
+        return shares;
+    }
+
+    /**
      * Get detected performance per GPU.
      *
      * @return detected performance per GPU
@@ -75,7 +85,7 @@ public class HealthCheckClaymore {
                 MinerHealth.LOGGER.warning("Logfile " + path + " has not been modified for " + seconds + " seconds. Ignoring reported output.");
             } else {
                 MinerHealth.LOGGER.info("Reading " + path + " last modified " + seconds + " seconds ago.");
-                performance = getPerformanceFromFile(path.toFile());
+                getPerformanceFromFile(path.toFile());
             }
         } catch (IOException e) {
             throw new IllegalStateException("Reading Claymore log failed.", e);
@@ -105,23 +115,21 @@ public class HealthCheckClaymore {
      * Parse given Claymore log.
      *
      * @param file given log
-     * @return performance
      * @throws IOException in case of IO error
      */
-    private double getPerformanceFromFile(File file) throws IOException {
-        double totalValue = 0;
+    private void getPerformanceFromFile(File file) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.contains("Total Speed")) {
                     Matcher matcher = OUTPUT_REGEX.matcher(line);
                     if (matcher.find()) {
-                        totalValue = Double.parseDouble(matcher.replaceFirst("$1"));
+                        performance = Double.parseDouble(matcher.replaceFirst("$1"));
+                        shares = Integer.parseInt(matcher.replaceFirst("$3"));
                     }
                 }
             }
         }
-        return totalValue;
     }
 
     /**

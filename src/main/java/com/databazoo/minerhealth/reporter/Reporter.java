@@ -15,6 +15,7 @@ public class Reporter {
     private int temperature;
     private double performance;
     private double performancePerGPU;
+    private int shares;
     private int temperatureRecheckAttempt;
     private int performanceRecheckAttempt;
 
@@ -32,17 +33,20 @@ public class Reporter {
         temperature = driver.getTemperature();
         performance = claymore.getPerformance();
         performancePerGPU = claymore.getPerformancePerGPU();
+        shares = claymore.getShares();
 
         MinerHealth.LOGGER.info("GPUs: " + gpuCount +
                 " Temperature: " + temperature +
                 " Performance: " + new Double(performance).longValue() +
+                " Shares: " + new Double(shares).longValue() +
                 " (" + new Double(performancePerGPU).longValue() + " per GPU)");
 
         boolean responseOK = validateResponse(
                 Report.up(Config.getClientID(), Config.getMachineName(),
                         gpuCount,
                         temperature,
-                        performance
+                        performance,
+                        shares
                 ).send()
         );
 
