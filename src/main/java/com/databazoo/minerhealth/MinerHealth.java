@@ -56,8 +56,7 @@ public class MinerHealth {
     private static class UncaughtExceptionHandlerImpl implements Thread.UncaughtExceptionHandler {
         @Override
         public void uncaughtException(Thread thread, Throwable ex) {
-            StringBuilder out = new StringBuilder();
-            out.append("Exception in thread ").append(thread.getName()).append(": ").append(ex.getMessage());
+            StringBuilder out = new StringBuilder("Exception in thread ").append(thread.getName()).append(": ").append(ex.getMessage());
             for(StackTraceElement elem : ex.getStackTrace()){
                 out.append("\n").append(elem.toString());
             }
