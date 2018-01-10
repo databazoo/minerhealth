@@ -187,6 +187,7 @@ public class Config {
                 "\n\tfanControl = " + fanControl +
                 "\n\tremoteReboot = " + remoteReboot +
                 "\n\treportInterval = " + reportInterval +
+                "\n\treportURL = " + APP_REST_URL +
                 "\n}";
     }
 }
