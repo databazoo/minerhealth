@@ -3,6 +3,7 @@ package com.databazoo.minerhealth.healthcheck;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.databazoo.minerhealth.MinerHealth;
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.reporter.Reporter;
 
@@ -44,21 +45,29 @@ public interface HealthCheck {
      * The entry point to the whole health check implementation
      */
     static void runChecks() {
-        getReporter().reportStart();
+        new Thread(() -> getReporter().reportStart()).start();
 
         new Timer("Check Timer").schedule(new TimerTask() {
 
             @Override public void run() {
-                final HealthCheck driver = getDriver();
-                final HealthCheckClaymore claymore = getClaymore();
+                try {
+                    final HealthCheck driver = getDriver();
+                    final HealthCheckClaymore claymore = getClaymore();
 
-                if (Config.isFanControl()) {
-                    driver.updateFans();
+                    if (Config.isFanControl()) {
+                        driver.updateFans();
+                    }
+                    driver.check();
+                    claymore.check();
+
+                    getReporter().reportToServer(driver, claymore);
+                } catch (Exception ex) {
+                    StringBuilder out = new StringBuilder("Checks failed: ").append(ex.getMessage());
+                    for(StackTraceElement elem : ex.getStackTrace()){
+                        out.append("\n").append(elem.toString());
+                    }
+                    MinerHealth.LOGGER.severe(out.toString());
                 }
-                driver.check();
-                claymore.check();
-
-                getReporter().reportToServer(driver, claymore);
             }
         }, 0, Config.getReportInterval() * 1000);
     }

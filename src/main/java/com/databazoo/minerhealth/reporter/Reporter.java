@@ -15,6 +15,7 @@ public class Reporter {
     private int temperature;
     private double performance;
     private double performancePerGPU;
+    private int shares;
     private int temperatureRecheckAttempt;
     private int performanceRecheckAttempt;
 
@@ -32,17 +33,20 @@ public class Reporter {
         temperature = driver.getTemperature();
         performance = claymore.getPerformance();
         performancePerGPU = claymore.getPerformancePerGPU();
+        shares = claymore.getShares();
 
         MinerHealth.LOGGER.info("GPUs: " + gpuCount +
                 " Temperature: " + temperature +
                 " Performance: " + new Double(performance).longValue() +
+                " Shares: " + new Double(shares).longValue() +
                 " (" + new Double(performancePerGPU).longValue() + " per GPU)");
 
         boolean responseOK = validateResponse(
                 Report.up(Config.getClientID(), Config.getMachineName(),
                         gpuCount,
                         temperature,
-                        performance
+                        performance,
+                        shares
                 ).send()
         );
 
@@ -126,10 +130,10 @@ public class Reporter {
     private void underperform() {
         performanceRecheckAttempt++;
         if (performanceRecheckAttempt > Config.getRecheckAttemptsLimit()) {
-            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU). Will now reboot.");
+            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will now reboot.");
             restart();
         } else {
-            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU). Will recheck (attempt " + performanceRecheckAttempt + ").");
+            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will recheck (attempt " + performanceRecheckAttempt + ").");
         }
     }
 

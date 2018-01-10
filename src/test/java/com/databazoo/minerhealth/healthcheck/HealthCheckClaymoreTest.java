@@ -39,6 +39,7 @@ public class HealthCheckClaymoreTest {
 		assertEquals(5, driver.getGpuCount());
 		assertEquals(70.438, driver.getPerformance());
 		assertEquals(14.0876, driver.getPerformancePerGPU());
+		assertEquals(7, driver.getShares());
 	}
 
 	@Test
