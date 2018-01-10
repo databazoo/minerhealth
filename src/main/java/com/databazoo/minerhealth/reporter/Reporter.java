@@ -130,10 +130,10 @@ public class Reporter {
     private void underperform() {
         performanceRecheckAttempt++;
         if (performanceRecheckAttempt > Config.getRecheckAttemptsLimit()) {
-            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU). Will now reboot.");
+            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will now reboot.");
             restart();
         } else {
-            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU). Will recheck (attempt " + performanceRecheckAttempt + ").");
+            MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will recheck (attempt " + performanceRecheckAttempt + ").");
         }
     }
 
