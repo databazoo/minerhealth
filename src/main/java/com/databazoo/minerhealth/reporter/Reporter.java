@@ -38,8 +38,8 @@ public class Reporter {
         MinerHealth.LOGGER.info("GPUs: " + gpuCount +
                 " Temperature: " + temperature +
                 " Performance: " + new Double(performance).longValue() +
-                " Shares: " + new Double(shares).longValue() +
-                " (" + new Double(performancePerGPU).longValue() + " per GPU)");
+                " (" + new Double(performancePerGPU).longValue() + " per GPU)" +
+                " Shares: " + new Double(shares).longValue());
 
         boolean responseOK = validateResponse(
                 Report.up(Config.getClientID(), Config.getMachineName(),
