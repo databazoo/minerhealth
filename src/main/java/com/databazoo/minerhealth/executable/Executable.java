@@ -58,8 +58,7 @@ public class Executable {
             THREAD_POOL.execute(() -> {
                 String s;
                 StringBuilder outputSB = new StringBuilder();
-                BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                try {
+                try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                     while ((s = input.readLine()) != null) {
                         if (outputSB.length() > 0) {
                             outputSB.append('\n');
@@ -75,8 +74,7 @@ public class Executable {
             THREAD_POOL.execute(() -> {
                 String s;
                 StringBuilder outputSB = new StringBuilder();
-                BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                try {
+                try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
                     while ((s = input.readLine()) != null) {
                         MinerHealth.LOGGER.warning(s);
                         if (outputSB.length() > 0) {
@@ -100,7 +98,7 @@ public class Executable {
 
             return this;
         } catch (Exception ex) {
-            MinerHealth.LOGGER.severe("Call "+Arrays.toString(args)+" failed: " + ex);
+            MinerHealth.LOGGER.severe("Call " + Arrays.toString(args) + " failed: " + ex);
             resultCode = -1;
             return this;
         }
