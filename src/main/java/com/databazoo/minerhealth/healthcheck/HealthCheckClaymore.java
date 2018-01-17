@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.databazoo.minerhealth.MinerHealth;
 import com.databazoo.minerhealth.config.Config;
@@ -100,14 +101,16 @@ public class HealthCheckClaymore {
      * @throws IOException in case of IO error
      */
     Path getLastLogPath() throws IOException {
-        Optional<Path> lastFilePath = Files.list(Config.getLogDir().toPath())
-                .filter(f -> !Files.isDirectory(f))
-                .max(Comparator.comparingLong(f -> f.toFile().lastModified()));
+        try (Stream<Path> list = Files.list(Config.getLogDir().toPath())) {
+            Optional<Path> lastFilePath = list
+                    .filter(f -> !Files.isDirectory(f))
+                    .max(Comparator.comparingLong(f -> f.toFile().lastModified()));
 
-        if (!lastFilePath.isPresent()) {
-            throw new IllegalStateException("No Claymore log available.");
-        } else {
-            return lastFilePath.get();
+            if (!lastFilePath.isPresent()) {
+                throw new IllegalStateException("No Claymore log available.");
+            } else {
+                return lastFilePath.get();
+            }
         }
     }
 

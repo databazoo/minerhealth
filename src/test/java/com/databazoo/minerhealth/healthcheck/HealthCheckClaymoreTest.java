@@ -49,6 +49,15 @@ public class HealthCheckClaymoreTest {
 		assertEquals(0.0, driver.getPerformance());
 	}
 
+	@Test
+	public void cycleTest() throws Exception {
+		Config.setLogDir(new File(new File(new File("target"), "test-classes"), "logs"));
+
+		for(int i=0; i<2048; i++) {
+			HealthCheck.getClaymore().check();
+		}
+	}
+
 	private class HealthCheckClaymoreImpl extends HealthCheckClaymore {
 
 		@Override
