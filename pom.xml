@@ -6,14 +6,14 @@
     <artifactId>minerhealth</artifactId>
     <packaging>jar</packaging>
 
-    <version>1.0.5</version>
+    <version>1.0.6-SNAPSHOT</version>
 
     <name>Databazoo Miner Health</name>
     <url>www.minerhealth.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.debug>false</project.debug>
+        <project.debug>true</project.debug>
     </properties>
 
     <build>
