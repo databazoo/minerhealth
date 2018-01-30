@@ -18,6 +18,7 @@ public class Reporter {
     private int shares;
     private int temperatureRecheckAttempt;
     private int performanceRecheckAttempt;
+    private int exceptionRecheckAttempt;
 
     /**
      * The usual "All up" report with all metrics included.
@@ -115,6 +116,7 @@ public class Reporter {
     private void resetAttempts() {
         temperatureRecheckAttempt = 0;
         performanceRecheckAttempt = 0;
+        exceptionRecheckAttempt = 0;
     }
 
     private void overheat() {
@@ -134,6 +136,16 @@ public class Reporter {
             restart();
         } else {
             MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will recheck (attempt " + performanceRecheckAttempt + ").");
+        }
+    }
+
+    public void exceptionCaught() {
+        exceptionRecheckAttempt++;
+        if (exceptionRecheckAttempt > Config.getRecheckAttemptsLimit()) {
+            MinerHealth.LOGGER.warning("Exception limit breached. Will now reboot.");
+            restart();
+        } else {
+            MinerHealth.LOGGER.warning("Exception limit breached. Will recheck (attempt " + exceptionRecheckAttempt + ").");
         }
     }
 
@@ -167,6 +179,12 @@ public class Reporter {
                 i++;
                 if (i < args.length) {
                     Config.setMinPerformancePerGPU(Double.parseDouble(args[i]));
+                }
+                break;
+            case "recheckLimit":
+                i++;
+                if (i < args.length) {
+                    Config.setRecheckAttemptsLimit(Integer.parseInt(args[i]));
                 }
                 break;
             }
