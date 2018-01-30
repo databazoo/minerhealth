@@ -67,6 +67,7 @@ public interface HealthCheck {
                         out.append("\n").append(elem.toString());
                     }
                     MinerHealth.LOGGER.severe(out.toString());
+                    getReporter().exceptionCaught();
                 }
             }
         }, 0, Config.getReportInterval() * 1000);
