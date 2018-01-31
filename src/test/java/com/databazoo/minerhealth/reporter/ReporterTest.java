@@ -76,7 +76,7 @@ public class ReporterTest {
 		 * Report and perform a reboot.
 		 */
 		@Override
-		void restart() {
+		void restart(String reason) {
 			restartCalled++;
 		}
 	}

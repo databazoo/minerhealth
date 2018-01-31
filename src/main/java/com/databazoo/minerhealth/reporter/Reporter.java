@@ -99,7 +99,7 @@ public class Reporter {
     boolean validateResponse(String response) {
         MinerHealth.LOGGER.info("Server response: " + response);
         if (response.equalsIgnoreCase("REMOTE_RESTART") && Config.isRemoteReboot()) {
-            restart();
+            restart("Remote request");
         } else if (response.equalsIgnoreCase("OVERHEAT")) {
             overheat();
         } else if (response.equalsIgnoreCase("UNDERPERFORM")) {
@@ -123,7 +123,7 @@ public class Reporter {
         temperatureRecheckAttempt++;
         if (temperatureRecheckAttempt > Config.getRecheckAttemptsLimit()) {
             MinerHealth.LOGGER.warning("Temperature limit breached at " + temperature + ". Will now reboot.");
-            restart();
+            restart("Temperature limit breached at " + temperature);
         } else {
             MinerHealth.LOGGER.warning("Temperature limit breached at " + temperature + ". Will recheck (attempt " + temperatureRecheckAttempt + ").");
         }
@@ -133,7 +133,7 @@ public class Reporter {
         performanceRecheckAttempt++;
         if (performanceRecheckAttempt > Config.getRecheckAttemptsLimit()) {
             MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will now reboot.");
-            restart();
+            restart("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares)");
         } else {
             MinerHealth.LOGGER.warning("Performance limit breached at " + performance + " (" + performancePerGPU + " per GPU, " + shares + " shares). Will recheck (attempt " + performanceRecheckAttempt + ").");
         }
@@ -143,7 +143,7 @@ public class Reporter {
         exceptionRecheckAttempt++;
         if (exceptionRecheckAttempt > Config.getRecheckAttemptsLimit()) {
             MinerHealth.LOGGER.warning("Exception limit breached. Will now reboot.");
-            restart();
+            restart("Exception limit breached");
         } else {
             MinerHealth.LOGGER.warning("Exception limit breached. Will recheck (attempt " + exceptionRecheckAttempt + ").");
         }
@@ -194,9 +194,9 @@ public class Reporter {
     /**
      * Report and perform a reboot.
      */
-    void restart() {
+    void restart(String reason) {
         Report
-                .restart(Config.getClientID(), Config.getMachineName())
+                .restart(Config.getClientID(), Config.getMachineName(), reason)
                 .send();
         if (UIConstants.isWindows()) {
             throw new IllegalStateException("Windows not supported yet.");
