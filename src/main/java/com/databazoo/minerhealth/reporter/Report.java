@@ -43,24 +43,24 @@ class Report {
      *
      * @param clientID client ID
      * @param machineName machine name
+     * @param reason restart reason
      * @return report instance
      */
-    static Report restart(String clientID, String machineName) {
+    static Report restart(String clientID, String machineName, String reason) {
         return new Report(clientID, machineName, "reboot");
     }
 
     private final String clientID;
     private final String machineName;
     private final String action;
+    private final String description;
     private int gpuCount;
     private double temperature;
     private double performance;
     private int shares;
 
     public Report(String clientID, String machineName, String action, int gpuCount, double temperature, double performance, int shares) {
-        this.clientID = clientID;
-        this.machineName = machineName;
-        this.action = action;
+        this(clientID, machineName, action);
         this.gpuCount = gpuCount;
         this.temperature = temperature;
         this.performance = performance;
@@ -68,9 +68,14 @@ class Report {
     }
 
     private Report(String clientID, String machineName, String action) {
+        this(clientID, machineName, action, null);
+    }
+
+    private Report(String clientID, String machineName, String action, String description) {
         this.clientID = clientID;
         this.machineName = machineName;
         this.action = action;
+        this.description = description;
     }
 
     /**
@@ -110,6 +115,9 @@ class Report {
         }
         if (shares > 0) {
             restUrl.append("&").append("shares").append("=").append(shares);
+        }
+        if (description != null && !description.isEmpty()) {
+            restUrl.append("&").append("description").append("=").append(description);
         }
         return new URL(restUrl.toString());
     }
