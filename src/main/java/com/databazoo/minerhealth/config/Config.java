@@ -37,6 +37,9 @@ public class Config {
     private double minPerformance = 0;
     private double minPerformancePerGPU = 0;
 
+    private int fan30Temp = 55;
+    private int fan100Temp = 69;
+
     public static String getClientID() {
         return INSTANCE.clientID;
     }
@@ -127,6 +130,22 @@ public class Config {
 
     public static void setMinPerformancePerGPU(double minPerformancePerGPU) {
         INSTANCE.minPerformancePerGPU = minPerformancePerGPU;
+    }
+
+    public static int getFan30Temp() {
+        return INSTANCE.fan30Temp;
+    }
+
+    public static void setFan30Temp(int fan30Temp) {
+        INSTANCE.fan30Temp = fan30Temp;
+    }
+
+    public static int getFan100Temp() {
+        return INSTANCE.fan100Temp;
+    }
+
+    public static void setFan100Temp(int fan100Temp) {
+        INSTANCE.fan100Temp = fan100Temp;
     }
 
     /**

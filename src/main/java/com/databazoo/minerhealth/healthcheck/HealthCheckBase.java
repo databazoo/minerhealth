@@ -8,6 +8,7 @@ import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 
 import com.databazoo.minerhealth.MinerHealth;
+import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.executable.Executable;
 
 /**
@@ -17,27 +18,7 @@ import com.databazoo.minerhealth.executable.Executable;
  */
 abstract class HealthCheckBase implements HealthCheck {
 
-    private static final Map<Integer, Integer> TEMPERATURE_RPM_MAP = new LinkedHashMap<>();
-    private static final Integer TEMPERATURE_HIGHEST = 69;
-    private static final Integer TEMPERATURE_LOWEST = 55;
-
-    static {
-        TEMPERATURE_RPM_MAP.put(TEMPERATURE_HIGHEST, 100);
-        TEMPERATURE_RPM_MAP.put(68, 95);
-        TEMPERATURE_RPM_MAP.put(67, 90);
-        TEMPERATURE_RPM_MAP.put(66, 85);
-        TEMPERATURE_RPM_MAP.put(65, 80);
-        TEMPERATURE_RPM_MAP.put(64, 75);
-        TEMPERATURE_RPM_MAP.put(63, 70);
-        TEMPERATURE_RPM_MAP.put(62, 65);
-        TEMPERATURE_RPM_MAP.put(61, 60);
-        TEMPERATURE_RPM_MAP.put(60, 55);
-        TEMPERATURE_RPM_MAP.put(59, 50);
-        TEMPERATURE_RPM_MAP.put(58, 45);
-        TEMPERATURE_RPM_MAP.put(57, 40);
-        TEMPERATURE_RPM_MAP.put(56, 35);
-        TEMPERATURE_RPM_MAP.put(TEMPERATURE_LOWEST, 30);
-    }
+    private static final int MIN_RPM = 30;
 
     /**
      * Cache for suitable driver instance
@@ -130,18 +111,30 @@ abstract class HealthCheckBase implements HealthCheck {
 
             for (int i = 0; i < tempValues.length; i++) {
                 int temp = tempValues[i];
-                if (temp > TEMPERATURE_HIGHEST) {
-                    setFanSpeed(i, TEMPERATURE_RPM_MAP.get(TEMPERATURE_HIGHEST));
-                } else if (temp < TEMPERATURE_LOWEST) {
+                int optimumRPM = getOptimumRPM(temp);
+                if (optimumRPM == 0) {
+                    // Make sure low temperature is not a mistake
                     if(temp > 10) {
-                        setFanSpeed(i, 0);
+                        setFanSpeed(i, optimumRPM);
                     }
                 } else {
-                    setFanSpeed(i, TEMPERATURE_RPM_MAP.get(temp));
+                    setFanSpeed(i, optimumRPM);
                 }
             }
         } else {
             MinerHealth.LOGGER.severe("Reading temperature failed.");
+        }
+    }
+
+    int getOptimumRPM(int temp) {
+        if (temp < Config.getFan30Temp()) {
+            return 0;
+        } else if (temp >= Config.getFan100Temp()) {
+            return 100;
+        } else {
+            double rpmPerDegree = (100.0 - MIN_RPM) / (Config.getFan100Temp() - Config.getFan30Temp());
+            double degreesAboveMin = temp - Config.getFan30Temp();
+            return (int) (rpmPerDegree * degreesAboveMin) + MIN_RPM;
         }
     }
 

@@ -169,6 +169,18 @@ public class Reporter {
                     Config.setMaxTemp(Double.parseDouble(args[i]));
                 }
                 break;
+            case "fan30Temp":
+                i++;
+                if (i < args.length) {
+                    Config.setFan30Temp(Integer.parseInt(args[i]));
+                }
+                break;
+            case "fan100Temp":
+                i++;
+                if (i < args.length) {
+                    Config.setFan100Temp(Integer.parseInt(args[i]));
+                }
+                break;
             case "minPerformance":
                 i++;
                 if (i < args.length) {
