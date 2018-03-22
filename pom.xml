@@ -6,7 +6,7 @@
     <artifactId>minerhealth</artifactId>
     <packaging>jar</packaging>
 
-    <version>1.0.7</version>
+    <version>1.0.8-SNAPSHOT</version>
 
     <name>Databazoo Miner Health</name>
     <url>www.minerhealth.com</url>
