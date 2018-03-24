@@ -6,13 +6,13 @@ import org.junit.Test;
 import java.util.regex.Matcher;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
 
 public class HealthCheckBaseTest {
 
 
     @Test
     public void getOptimumRPM() throws Exception {
+        Config.setFan100Temp(69);
         HealthCheckBase driver = new HealthCheckBaseImpl();
 
         assertEquals(0, driver.getOptimumRPM(40));
