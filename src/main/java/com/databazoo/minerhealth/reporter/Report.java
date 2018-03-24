@@ -19,12 +19,12 @@ class Report {
      * @param clientID client ID
      * @param machineName machine name
      * @param gpuCount detected count of GPUs
-     * @param temperature detected temperature
-     * @param performance detected performance
+     * @param temp detected temperature
+     * @param perf detected performance
      * @return report instance
      */
-    static Report up(String clientID, String machineName, int gpuCount, double temperature, double performance, int shares) {
-        return new Report(clientID, machineName, "up", gpuCount, temperature, performance, shares);
+    static Report up(String clientID, String machineName, int gpuCount, double temp, double fans, double perf, int shares) {
+        return new Report(clientID, machineName, "up", gpuCount, temp, fans, perf, shares);
     }
 
     /**
@@ -55,15 +55,17 @@ class Report {
     private final String action;
     private final String description;
     private int gpuCount;
-    private double temperature;
-    private double performance;
+    private double temp;
+    private double fans;
+    private double perf;
     private int shares;
 
-    public Report(String clientID, String machineName, String action, int gpuCount, double temperature, double performance, int shares) {
+    public Report(String clientID, String machineName, String action, int gpuCount, double temp, double fans, double perf, int shares) {
         this(clientID, machineName, action);
         this.gpuCount = gpuCount;
-        this.temperature = temperature;
-        this.performance = performance;
+        this.temp = temp;
+        this.fans = fans;
+        this.perf = perf;
         this.shares = shares;
     }
 
@@ -107,11 +109,14 @@ class Report {
         if (gpuCount > 0) {
             restUrl.append("&").append("gpus").append("=").append(gpuCount);
         }
-        if (temperature > 0) {
-            restUrl.append("&").append("temp").append("=").append(temperature);
+        if (temp > 0) {
+            restUrl.append("&").append("temp").append("=").append(temp);
         }
-        if (performance > 0) {
-            restUrl.append("&").append("output").append("=").append(performance);
+        if (fans > 0) {
+            restUrl.append("&").append("fans").append("=").append(fans);
+        }
+        if (perf > 0) {
+            restUrl.append("&").append("output").append("=").append(perf);
         }
         if (shares > 0) {
             restUrl.append("&").append("shares").append("=").append(shares);

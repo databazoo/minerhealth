@@ -1,11 +1,11 @@
 package com.databazoo.minerhealth.healthcheck;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.databazoo.minerhealth.MinerHealth;
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.reporter.Reporter;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Health Check interface. The entry point to the whole health check implementation is {@link #runChecks()}.
@@ -40,6 +40,13 @@ public interface HealthCheck {
      * @return temperature as provided by the driver
      */
     int getTemperature();
+
+    /**
+     * Get fan RPM.
+     *
+     * @return highest fan RPM (percent)
+     */
+    int getFanRPM();
 
     /**
      * The entry point to the whole health check implementation

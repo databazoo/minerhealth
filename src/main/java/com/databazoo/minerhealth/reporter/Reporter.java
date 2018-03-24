@@ -13,6 +13,7 @@ import com.databazoo.minerhealth.healthcheck.HealthCheckClaymore;
 public class Reporter {
 
     private int temperature;
+    private int fanRPM;
     private double performance;
     private double performancePerGPU;
     private int shares;
@@ -32,20 +33,23 @@ public class Reporter {
     public void reportToServer(HealthCheck driver, HealthCheckClaymore claymore) {
         int gpuCount = claymore.getGpuCount();
         temperature = driver.getTemperature();
+        fanRPM = driver.getFanRPM();
         performance = claymore.getPerformance();
         performancePerGPU = claymore.getPerformancePerGPU();
         shares = claymore.getShares();
 
         MinerHealth.LOGGER.info("GPUs: " + gpuCount +
-                " Temperature: " + temperature +
-                " Performance: " + new Double(performance).longValue() +
-                " (" + new Double(performancePerGPU).longValue() + " per GPU)" +
+                " Temp: " + temperature +
+                " Fans: " + fanRPM +
+                " Perf: " + new Double(performance).longValue() +
+                " (" + new Double(performancePerGPU).longValue() + " / GPU)" +
                 " Shares: " + new Double(shares).longValue());
 
         boolean responseOK = validateResponse(
                 Report.up(Config.getClientID(), Config.getMachineName(),
                         gpuCount,
                         temperature,
+                        fanRPM,
                         performance,
                         shares
                 ).send()

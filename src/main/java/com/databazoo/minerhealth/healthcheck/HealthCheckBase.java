@@ -1,15 +1,13 @@
 package com.databazoo.minerhealth.healthcheck;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.regex.Matcher;
-
 import com.databazoo.minerhealth.MinerHealth;
 import com.databazoo.minerhealth.config.Config;
 import com.databazoo.minerhealth.executable.Executable;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.regex.Matcher;
 
 /**
  * Sub-frame of all health check drivers. Provides a cache for suitable driver instance, etc.
@@ -29,6 +27,7 @@ abstract class HealthCheckBase implements HealthCheck {
 
     private int temperature;
     private int gpuCount;
+    private int fanRPM;
 
     /**
      * Get HealthCheck driver instance
@@ -106,18 +105,16 @@ abstract class HealthCheckBase implements HealthCheck {
     public void updateFans() {
         Executable exec = new Executable(getTemperatureQuery()).exec();
         if (exec.getResultCode() == 0) {
+            fanRPM = 0;
             int[] tempValues = new int[HealthCheck.getClaymore().getGpuCount()];
             readTemperatures(exec, (currentGpu, gpuTemp) -> tempValues[currentGpu] = gpuTemp);
 
             for (int i = 0; i < tempValues.length; i++) {
                 int temp = tempValues[i];
                 int optimumRPM = getOptimumRPM(temp);
-                if (optimumRPM == 0) {
-                    // Make sure low temperature is not a mistake
-                    if(temp > 10) {
-                        setFanSpeed(i, optimumRPM);
-                    }
-                } else {
+
+                // Make sure low temperature is not a mistake
+                if(temp > 10) {
                     setFanSpeed(i, optimumRPM);
                 }
             }
@@ -160,12 +157,15 @@ abstract class HealthCheckBase implements HealthCheck {
     }
 
     /**
-     * Set fan speed.
+     * Set fan speed. Also, store max fan RPM for reporting.
      *
      * @param gpuNumber GPU number (zero-based)
      * @param rpm 0-100%
      */
     void setFanSpeed(int gpuNumber, Integer rpm) {
+        if (rpm > fanRPM) {
+            fanRPM = rpm;
+        }
         Executable exec = new Executable(setFanSpeedQuery(gpuNumber, rpm)).exec();
         if (exec.getResultCode() != 0) {
             throw new IllegalStateException("Setting fan speed failed for GPU " + gpuNumber);
@@ -206,5 +206,15 @@ abstract class HealthCheckBase implements HealthCheck {
     @Override
     public int getTemperature() {
         return temperature;
+    }
+
+    /**
+     * Get fan RPM.
+     *
+     * @return highest fan RPM (percent)
+     */
+    @Override
+    public int getFanRPM() {
+        return fanRPM;
     }
 }
